@@ -22,3 +22,8 @@ All commands and inputs tracked with timestamps.
 | 2026-04-20T00:00:00Z | `Yes let's do this. Request List Screen and Request Detail Screen will need to be accommodated.` |
 | 2026-04-20T00:00:00Z | `I want to design the modules so that we have proper separation, we'll have an app module, but then organize like network layer for making GET/POST requests, what else do we have to modularize?` |
 | 2026-04-20T00:00:00Z | `yes this works. Let's start by creating a private github PR via-interview-tseytlin` |
+| 2026-04-20T00:00:00Z | `Okay i want to proceed with incremental pull requests, let's come up with a phasing document that will get us concrete testable steps building up` |
+| 2026-04-20T00:00:00Z | `Let's move forward a phase where we can get the app up and running with something very simple` |
+| 2026-04-20T00:00:00Z | `Update submission to have the PR link https://github.com/benzabill/via-interview-tseytlin/tree/main` |
+| 2026-04-20T23:30Z | `Add Readme, add minute timestamp to the BEN_PROCESS.md writing` |
+| 2026-04-20T23:31Z | `push the readme change and these updates as a PR and then merge it` |

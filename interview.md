@@ -125,5 +125,7 @@
 
 ## Submission
 
-- [ ] Provide project as a zipped archive **or** a link to a Git repository
+- [x] Provide project as a zipped archive **or** a link to a Git repository
 - [ ] Test targets must be included in the submission
+
+**Repository:** https://github.com/benzabill/via-interview-tseytlin/tree/main
