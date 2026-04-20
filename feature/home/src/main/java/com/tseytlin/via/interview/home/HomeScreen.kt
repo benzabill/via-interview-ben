@@ -1,6 +1,7 @@
 package com.tseytlin.via.interview.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,20 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,82 +31,79 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tseytlin.via.interview.domain.model.RequestOutcome
-import kotlinx.coroutines.flow.SharedFlow
+import com.tseytlin.via.interview.home.viewmodel.RequestSharedViewModel
+import org.koin.androidx.compose.koinViewModel
 
-private val HomeBackground = Color(0xFFDEEFF5)
-private val HomeTitleColor = Color(0xFF1A4E63)
-private val ButtonBackground = Color(0xFF1A3A4A)
-private val SnackbarSuccess = Color(0xFF90C99A)
-private val SnackbarError = Color(0xFFE89090)
+private val ViaTeal = Color(0xFF0C3B3A)
+private val ViaLightBlue = Color(0xFFD6EAF0)
+private val SuccessGreen = Color(0xFF2E7D32)
+private val ErrorPink = Color(0xFFE91E63)
+
+private class OutcomeSnackbarVisuals(
+    override val message: String,
+    val isSuccess: Boolean,
+) : SnackbarVisuals {
+    override val actionLabel: String? = null
+    override val duration: SnackbarDuration = SnackbarDuration.Short
+    override val withDismissAction: Boolean = false
+}
 
 @Composable
 fun HomeScreen(
-    outcomeFlow: SharedFlow<RequestOutcome>,
     onCreateRequest: () -> Unit,
+    sharedViewModel: RequestSharedViewModel = koinViewModel(),
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    var lastOutcome by remember { mutableStateOf<RequestOutcome?>(null) }
 
-    LaunchedEffect(Unit) {
-        outcomeFlow.collect { outcome ->
-            lastOutcome = outcome
-            snackbarHostState.showSnackbar(
-                message = when (outcome) {
-                    is RequestOutcome.Approved -> "Request approved"
-                    is RequestOutcome.Rejected -> outcome.message
-                    is RequestOutcome.ApprovalFailed -> outcome.message
-                },
-            )
-            lastOutcome = null
+    LaunchedEffect(sharedViewModel) {
+        sharedViewModel.outcomeFlow.collect { outcome ->
+            snackbarHostState.showSnackbar(outcome.toSnackbarVisuals())
         }
     }
 
     Scaffold(
-        containerColor = HomeBackground,
+        containerColor = ViaLightBlue,
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState) { data ->
-                val isSuccess = lastOutcome is RequestOutcome.Approved
-                Snackbar(
-                    snackbarData = data,
-                    containerColor = if (isSuccess) SnackbarSuccess else SnackbarError,
-                    contentColor = Color(0xFF1A1A1A),
-                    dismissActionContentColor = Color(0xFF1A1A1A),
-                )
-            }
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    val container = if ((data.visuals as? OutcomeSnackbarVisuals)?.isSuccess == true) {
+                        SuccessGreen
+                    } else {
+                        ErrorPink
+                    }
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = container,
+                        contentColor = Color.White,
+                    )
+                },
+            )
         },
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = "Home",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = HomeTitleColor,
-            )
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                ViaLogo()
-            }
+            ViaLogo()
+            Spacer(modifier = Modifier.height(48.dp))
             Button(
                 onClick = onCreateRequest,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonBackground),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ViaTeal,
+                    contentColor = Color.White,
+                ),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Create new request", color = Color.White, fontSize = 16.sp)
+                Text(
+                    text = "Create new request",
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
             }
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -122,10 +118,19 @@ private fun ViaLogo() {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "_VIA",
-            fontSize = 28.sp,
+            text = "VIA",
+            color = ViaTeal,
+            fontSize = 44.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF1A3A4A),
         )
     }
+}
+
+private fun RequestOutcome.toSnackbarVisuals(): SnackbarVisuals = when (this) {
+    RequestOutcome.Approved ->
+        OutcomeSnackbarVisuals(message = "Request approved", isSuccess = true)
+    is RequestOutcome.Rejected ->
+        OutcomeSnackbarVisuals(message = message, isSuccess = false)
+    is RequestOutcome.ApprovalFailed ->
+        OutcomeSnackbarVisuals(message = message, isSuccess = false)
 }
