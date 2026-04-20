@@ -23,6 +23,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.koin.android)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
