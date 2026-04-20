@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class RequestSharedViewModel : ViewModel() {
 
-    private val _outcomeFlow = MutableSharedFlow<RequestOutcome>()
+    private val _outcomeFlow = MutableSharedFlow<RequestOutcome>(extraBufferCapacity = 1)
     val outcomeFlow: SharedFlow<RequestOutcome> = _outcomeFlow.asSharedFlow()
 
     fun emitOutcome(outcome: RequestOutcome) {
