@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "via-ben-tseytlin-interview"
 include(":app")
- 
+include(":domain")
+include(":data")
+include(":feature:home")
+include(":feature:detail")
