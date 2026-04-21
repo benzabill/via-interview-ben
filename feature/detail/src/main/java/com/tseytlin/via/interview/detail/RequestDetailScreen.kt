@@ -1,21 +1,19 @@
 package com.tseytlin.via.interview.detail
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tseytlin.via.interview.detail.ui.SlideToApprove
 import com.tseytlin.via.interview.detail.viewmodel.RequestDetailViewModel
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestOutcome
@@ -35,110 +32,103 @@ import org.koin.androidx.compose.koinViewModel
 
 private val DetailBackground = Color(0xFF1B5061)
 private val DetailCardBackground = Color(0xFF2A6B7C)
+private val CardTitleColor = Color.White
+private val CardBodyColor = Color(0xFFDCEAEF)
+private val RejectOutline = Color.White
+private val RejectLabel = Color.White
 
 @Composable
 fun RequestDetailScreen(
     request: Request,
     onNavigateBack: (RequestOutcome) -> Unit,
-    viewModel: RequestDetailViewModel = koinViewModel(),
 ) {
+    val viewModel: RequestDetailViewModel = koinViewModel()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel) {
         viewModel.navigationEvent.collect { outcome ->
             onNavigateBack(outcome)
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DetailBackground),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-        ) {
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = "New Request",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            RequestCard(request = request)
-            Spacer(modifier = Modifier.weight(1f))
-            ActionBar(
-                isLoading = isLoading,
-                onReject = { viewModel.reject(request) },
-                onApprove = { viewModel.approve(request) },
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-
-        if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
+    Scaffold(containerColor = DetailBackground) { padding ->
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                CircularProgressIndicator(color = Color.White)
+                Text(
+                    text = "New Request",
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                RequestCard(request = request, modifier = Modifier.fillMaxWidth())
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                OutlinedButton(
+                    onClick = { viewModel.reject(request) },
+                    enabled = !isLoading,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Text(
+                        text = "Reject",
+                        color = RejectLabel,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
+
+                SlideToApprove(
+                    label = "Slide to approve",
+                    enabled = !isLoading,
+                    onApprove = { viewModel.approve(request) },
+                )
+            }
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun RequestCard(request: Request) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(DetailCardBackground, RoundedCornerShape(12.dp))
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+private fun RequestCard(request: Request, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = DetailCardBackground),
     ) {
-        Text(
-            text = request.title,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-        )
-        Text(
-            text = request.description,
-            fontSize = 14.sp,
-            color = Color.White.copy(alpha = 0.85f),
-            lineHeight = 20.sp,
-        )
-    }
-}
-
-@Composable
-private fun ActionBar(
-    isLoading: Boolean,
-    onReject: () -> Unit,
-    onApprove: () -> Unit,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        OutlinedButton(
-            onClick = onReject,
-            enabled = !isLoading,
-            border = BorderStroke(1.dp, Color.White),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.height(56.dp),
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Reject", fontSize = 16.sp)
+            Text(
+                text = request.title,
+                color = CardTitleColor,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = request.description,
+                color = CardBodyColor,
+                fontSize = 14.sp,
+            )
         }
-        SlideToApprove(
-            onApprove = onApprove,
-            enabled = !isLoading,
-            modifier = Modifier.weight(1f),
-        )
     }
 }
