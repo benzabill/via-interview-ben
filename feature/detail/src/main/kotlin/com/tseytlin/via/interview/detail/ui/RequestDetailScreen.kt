@@ -1,7 +1,8 @@
-package com.tseytlin.via.interview.detail
+package com.tseytlin.via.interview.detail.ui
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -107,7 +108,7 @@ fun RequestDetailScreen(
                             .width(RejectButtonWidth)
                             .height(RejectButtonHeight),
                         shape = RoundedCornerShape(RejectButtonCorner),
-                        border = androidx.compose.foundation.BorderStroke(OutlineWidth, TrackBorder),
+                        border = BorderStroke(OutlineWidth, TrackBorder),
                     ) {
                         Text(
                             text = "Reject",

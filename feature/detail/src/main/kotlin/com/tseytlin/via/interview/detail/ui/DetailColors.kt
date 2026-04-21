@@ -1,4 +1,4 @@
-package com.tseytlin.via.interview.detail
+package com.tseytlin.via.interview.detail.ui
 
 import androidx.compose.ui.graphics.Color
 
@@ -21,7 +21,6 @@ internal val LabelOnLight = Color(0xFF285976)
 // Slide-to-approve — thumb
 internal val ThumbColor = Color.White
 internal val ThumbShadow = Color(0x29000000)
-internal val CheckBadgeColor = Color(0xFF87D6CD)
 
 // Error snackbar (shown when approve fails and we stay on Detail for retry)
 internal val ErrorSnackbarBackground = Color(0xFFF4A3A3)

@@ -1,5 +1,6 @@
-package com.tseytlin.via.interview.home
+package com.tseytlin.via.interview.home.ui
 
+import com.tseytlin.via.interview.home.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

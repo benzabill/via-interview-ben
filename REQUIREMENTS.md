@@ -1,5 +1,7 @@
 # Android Development Technical Interview — Requirements Spec
 
+**Figma designs:** https://www.figma.com/design/pouKokTVOWcW04FJJIu755/VIA-Interview?node-id=0-1&p=f
+
 ## Decisions
 
 | # | Decision | Choice | Rationale |
