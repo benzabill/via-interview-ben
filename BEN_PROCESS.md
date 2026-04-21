@@ -46,3 +46,9 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T00:27Z | `work on top of fresh main` |
 | 2026-04-21T00:29Z | `/Users/btseytlin/Downloads/slide_states.pdf carefully implement the sliders to match the ui specifications` |
 | 2026-04-21T00:31Z | `/Users/btseytlin/Downloads/via_figma_designs.pdf review/look at the designs again - lets make sure we're implemented to look as closely as possible to the designs. Like the Reject button being next to the slide to accept button` |
+| 2026-04-21T00:37Z | `/Users/btseytlin/Downloads/actual.pdf i never get the snackbars shown on the HomeScreen` |
+| 2026-04-21T00:38Z | `review the code, are we implemented on these specs? Concurrency and Error Handling ● Use Kotlin Coroutines and Flow to call the mock service and manage the ViewModel's state. ● The ViewModel must expose state changes (e.g., isLoading, successMessage, errorMessage) using StateFlow to the View reactively. Code Quality & Testing ● Unit Tests: You must provide unit tests for the RequestDetailViewModel. ○ Test at least one successful approval path (verifying state transitions). ○ Test at least one failure path (rejection or random service failure). ○ Tests must use a TestDispatcher and runTest to ensure proper coroutine testing practices. ● Mocking: Use a mock or stub implementation of the RequestService interface to effectively isolate and test the ViewModel's logic. ● Code Quality: Write clean, modular, and maintainable code with clear naming conventions.` |
+| 2026-04-21T00:41Z | `yes but do it on a separate branch` |
+| 2026-04-21T00:43Z | `check out the branch` |
+| 2026-04-21T00:42Z | `start a git worktree and do the work there` |
+| 2026-04-21T00:46Z | `im still not seeing any snackbars` |

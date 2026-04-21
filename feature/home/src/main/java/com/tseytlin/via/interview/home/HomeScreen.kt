@@ -65,6 +65,7 @@ fun HomeScreen(
 
     LaunchedEffect(sharedViewModel) {
         sharedViewModel.outcomeFlow.collect { outcome ->
+            sharedViewModel.consumeOutcome()
             snackbarHostState.showSnackbar(outcome.toSnackbarVisuals())
         }
     }
