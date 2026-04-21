@@ -32,6 +32,6 @@ Android technical interview task: a Request approval app built with MVVM + Jetpa
 
 ## Key Documents
 
-- [`interview.md`](./interview.md) — requirements spec distilled from the brief, with decisions locked in
+- [`REQUIREMENTS.md`](./REQUIREMENTS.md) — requirements spec distilled from the brief, with decisions locked in
 - [`PHASES.md`](./PHASES.md) — incremental PR plan, one phase per PR
 - [`BEN_PROCESS.md`](./BEN_PROCESS.md) — running log of prompts/commands driving the work
