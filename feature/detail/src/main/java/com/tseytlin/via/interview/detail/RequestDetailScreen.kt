@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,9 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.tseytlin.via.interview.detail.viewmodel.RequestDetailViewModel
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestOutcome
@@ -62,8 +61,7 @@ fun RequestDetailScreen(
                 Text(
                     text = "New Request",
                     color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium,
                 )
 
                 RequestCard(request = request, modifier = Modifier.fillMaxWidth())
@@ -81,8 +79,7 @@ fun RequestDetailScreen(
                     Text(
                         text = "Reject",
                         color = RejectLabel,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
+                        style = MaterialTheme.typography.labelLarge,
                     )
                 }
 
@@ -121,13 +118,12 @@ private fun RequestCard(request: Request, modifier: Modifier = Modifier) {
             Text(
                 text = request.title,
                 color = CardTitleColor,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
             )
             Text(
                 text = request.description,
                 color = CardBodyColor,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }

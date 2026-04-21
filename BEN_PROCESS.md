@@ -34,3 +34,5 @@ All commands and inputs tracked with timestamps.
 | 2026-04-20T23:47Z | `start a git work tree so we can in parallel : implement phase 7` |
 | 2026-04-20T23:55Z | `continue the phase, pr creation` |
 | 2026-04-20T23:55Z | `continue phase 7` |
+| 2026-04-21T00:09Z | `are you able to look at the figma specs on the screens? https://www.figma.com/design/pouKokTVOWcW04FJJIu755/VIA-Interview?node-id=0-1&p=f&t=EhBUmkWXLE6OpUUY-0` |
+| 2026-04-21T00:10Z | `can we do figma mcp through claude code terminal` |

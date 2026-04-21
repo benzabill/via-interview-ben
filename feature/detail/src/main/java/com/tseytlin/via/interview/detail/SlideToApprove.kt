@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,8 +68,7 @@ fun SlideToApprove(
         Text(
             text = label,
             color = LabelColor,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.align(Alignment.Center),
         )
 

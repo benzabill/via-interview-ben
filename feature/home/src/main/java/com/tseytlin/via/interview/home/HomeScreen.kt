@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -101,6 +102,7 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "Create new request",
+                    style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
             }

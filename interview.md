@@ -26,30 +26,30 @@
 
 ## Architecture
 
-- [ ] Use **MVVM** pattern
-- [ ] Use **Jetpack Compose**
-- [ ] Use **Koin** for dependency injection
-- [ ] Use Kotlin Coroutines and Flow for async operations and state management
-- [ ] **Single Activity** (`MainActivity`) hosting a `NavHost`
-- [ ] `HomeScreen` and `RequestDetailScreen` are `@Composable` destinations — no Fragments
+- [x] Use **MVVM** pattern
+- [x] Use **Jetpack Compose**
+- [x] Use **Koin** for dependency injection
+- [x] Use Kotlin Coroutines and Flow for async operations and state management
+- [x] **Single Activity** (`MainActivity`) hosting a `NavHost`
+- [x] `HomeScreen` and `RequestDetailScreen` are `@Composable` destinations — no Fragments
 
 ---
 
 ## Data Model
 
-- [ ] Define a `Request` data structure with fields: `id: String`, `title: String`, `description: String`
-- [ ] `Request` must be annotated with `@Serializable` (kotlinx.serialization)
+- [x] Define a `Request` data structure with fields: `id: String`, `title: String`, `description: String`
+- [x] `Request` must be annotated with `@Serializable` (kotlinx.serialization)
 
 ---
 
 ## Service Layer
 
-- [ ] Define a `RequestService` interface with methods returning `RequestResult`
-- [ ] Define `RequestResult` as a sealed class: `RequestResult.Success` and `RequestResult.Error(message: String)`
-- [ ] Implement a concrete `MockRequestService` class
-- [ ] `MockRequestService` methods must be `suspend` functions
-- [ ] Use coroutine `delay()` to simulate network latency
-- [ ] Use coroutine `delay()` to simulate random failure; wrap exceptions into `RequestResult.Error`
+- [x] Define a `RequestService` interface with methods returning `RequestResult`
+- [x] Define `RequestResult` as a sealed class: `RequestResult.Success` and `RequestResult.Error(message: String)`
+- [x] Implement a concrete `MockRequestService` class
+- [x] `MockRequestService` methods must be `suspend` functions
+- [x] Use coroutine `delay()` to simulate network latency
+- [x] Use coroutine `delay()` to simulate random failure; wrap exceptions into `RequestResult.Error`
 
 ### Action behavior
 
@@ -62,70 +62,70 @@
 
 ## ViewModel
 
-- [ ] Implement `RequestDetailViewModel` to host detail business logic; depends on `RequestService` interface
-- [ ] Implement `RequestSharedViewModel` scoped to the nav graph to pass outcome events to the List screen
-- [ ] `RequestDetailViewModel` must expose `isLoading` via `StateFlow`
-- [ ] `RequestDetailViewModel` must expose `successMessage` via `StateFlow`
-- [ ] `RequestDetailViewModel` must expose `errorMessage` via `StateFlow`
-- [ ] `RequestSharedViewModel` must expose outcome events via `SharedFlow`
-- [ ] Use Kotlin Coroutines and Flow internally for all async service calls
-- [ ] Min SDK: API 29 (Android 10)
+- [x] Implement `RequestDetailViewModel` to host detail business logic; depends on `RequestService` interface
+- [x] Implement `RequestSharedViewModel` scoped to the nav graph to pass outcome events to the List screen
+- [x] `RequestDetailViewModel` must expose `isLoading` via `StateFlow`
+- [x] `RequestDetailViewModel` must expose `successMessage` via `StateFlow`
+- [x] `RequestDetailViewModel` must expose `errorMessage` via `StateFlow`
+- [x] `RequestSharedViewModel` must expose outcome events via `SharedFlow`
+- [x] Use Kotlin Coroutines and Flow internally for all async service calls
+- [x] Min SDK: API 29 (Android 10)
 
 ---
 
 ## Request List Screen
 
-- [ ] Display a button to initiate a new request
-- [ ] Button tap must use the Jetpack Navigation Component to navigate to the Detail screen
-- [ ] Observe outcome events via **`SharedFlow` on a nav-graph-scoped ViewModel**
-- [ ] Display a `Snackbar` after returning from the Detail screen:
+- [x] Display a button to initiate a new request
+- [x] Button tap must use the Jetpack Navigation Component to navigate to the Detail screen
+- [x] Observe outcome events via **`SharedFlow` on a nav-graph-scoped ViewModel**
+- [x] Display a `Snackbar` after returning from the Detail screen:
   - Approve success → green, "Request approved"
   - Reject → pink, "Request rejected"
   - Approve service failure → pink, descriptive error message from service
-- [ ] Snackbar display must be transient (one-shot, not re-shown on recomposition/re-entry)
+- [x] Snackbar display must be transient (one-shot, not re-shown on recomposition/re-entry)
 
 ---
 
 ## Request Detail Screen
 
-- [ ] Display request details (mock data)
-- [ ] Include a "Reject" button
-- [ ] Include an "Approve" slider
-- [ ] "Reject" button tap must call the ViewModel to process the rejection
-- [ ] "Approve" slider fires on **thumb-release at max position** and calls the ViewModel to process the approval
-- [ ] Show a `CircularProgressIndicator` while the async action is in progress
-- [ ] Disable ALL interactions while the async action is in progress
+- [x] Display request details (mock data)
+- [x] Include a "Reject" button
+- [x] Include an "Approve" slider
+- [x] "Reject" button tap must call the ViewModel to process the rejection
+- [x] "Approve" slider fires on **thumb-release at max position** and calls the ViewModel to process the approval
+- [x] Show a `CircularProgressIndicator` while the async action is in progress
+- [x] Disable ALL interactions while the async action is in progress
 
 ---
 
 ## Navigation
 
-- [ ] All navigation must use the Jetpack Navigation Component (no manual back-stack manipulation)
+- [x] All navigation must use the Jetpack Navigation Component (no manual back-stack manipulation)
 
 ---
 
 ## Unit Tests
 
-- [ ] Provide unit tests for `RequestDetailViewModel`
-- [ ] Test at least one **successful approval path**, verifying state transitions
-- [ ] Test at least one **failure path** (rejection or random service failure)
-- [ ] Tests must use `TestDispatcher`
-- [ ] Tests must use `runTest`
-- [ ] Use **MockK** to mock `RequestService` and isolate ViewModel logic (no real service in tests)
+- [x] Provide unit tests for `RequestDetailViewModel`
+- [x] Test at least one **successful approval path**, verifying state transitions
+- [x] Test at least one **failure path** (rejection or random service failure)
+- [x] Tests must use `TestDispatcher`
+- [x] Tests must use `runTest`
+- [x] Use **MockK** to mock `RequestService` and isolate ViewModel logic (no real service in tests)
 
 ---
 
 ## Code Quality
 
-- [ ] Clean, modular, maintainable code
-- [ ] Clear naming conventions
-- [ ] Clear separation of layers (UI / ViewModel / Service)
+- [x] Clean, modular, maintainable code
+- [x] Clear naming conventions
+- [x] Clear separation of layers (UI / ViewModel / Service)
 
 ---
 
 ## Submission
 
 - [x] Provide project as a zipped archive **or** a link to a Git repository
-- [ ] Test targets must be included in the submission
+- [x] Test targets must be included in the submission
 
 **Repository:** https://github.com/benzabill/via-interview-tseytlin/tree/main
