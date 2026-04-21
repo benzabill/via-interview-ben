@@ -3,11 +3,13 @@ package com.tseytlin.via.interview.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -62,32 +64,42 @@ fun RequestDetailScreen(
                     text = "New Request",
                     color = Color.White,
                     style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 )
 
                 RequestCard(request = request, modifier = Modifier.fillMaxWidth())
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                OutlinedButton(
-                    onClick = { viewModel.reject(request) },
-                    enabled = !isLoading,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    shape = RoundedCornerShape(8.dp),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = "Reject",
-                        color = RejectLabel,
-                        style = MaterialTheme.typography.labelLarge,
+                    OutlinedButton(
+                        onClick = { viewModel.reject(request) },
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .width(104.dp)
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, RejectOutline),
+                    ) {
+                        Text(
+                            text = "Reject",
+                            color = RejectLabel,
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    }
+
+                    SlideToApprove(
+                        label = "Slide to approve",
+                        enabled = !isLoading,
+                        onApprove = { viewModel.approve(request) },
+                        modifier = Modifier.weight(1f),
                     )
                 }
-
-                SlideToApprove(
-                    label = "Slide to approve",
-                    enabled = !isLoading,
-                    onApprove = { viewModel.approve(request) },
-                )
             }
 
             if (isLoading) {
