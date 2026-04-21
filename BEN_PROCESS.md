@@ -90,3 +90,6 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T01:52Z | `update to main and make a pr` |
 | 2026-04-21T01:53Z | `can we rename interview.md to REQUIREMENTS.md` |
 | 2026-04-21T01:54Z | `delete ExampleInstrumentedTest and ExampleUnitTest and empty folders that those leave` |
+| 2026-04-21T01:56Z | `any other cleanup we can do out of the git repo to clean out unused things?` |
+| 2026-04-21T01:58Z | `clean up all 3` |
+| 2026-04-21T01:59Z | `i dont see a pr?` |
