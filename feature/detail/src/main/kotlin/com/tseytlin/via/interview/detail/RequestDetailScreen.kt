@@ -37,7 +37,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RequestDetailScreen(
-    request: Request,
     onNavigateBack: (RequestOutcome) -> Unit,
 ) {
     val viewModel: RequestDetailViewModel = koinViewModel()
@@ -71,7 +70,7 @@ fun RequestDetailScreen(
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 )
 
-                RequestCard(request = request, modifier = Modifier.fillMaxWidth())
+                RequestCard(request = viewModel.request, modifier = Modifier.fillMaxWidth())
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -81,7 +80,7 @@ fun RequestDetailScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     OutlinedButton(
-                        onClick = { viewModel.reject(request) },
+                        onClick = { viewModel.reject() },
                         enabled = !isLoading,
                         modifier = Modifier
                             .width(RejectButtonWidth)
@@ -99,7 +98,7 @@ fun RequestDetailScreen(
                     SlideToApprove(
                         label = "Slide to approve",
                         enabled = !isLoading,
-                        onApprove = { viewModel.approve(request) },
+                        onApprove = { viewModel.approve() },
                         modifier = Modifier.weight(1f),
                     )
                 }

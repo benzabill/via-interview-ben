@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.domain.model.RequestResult
-import com.tseytlin.via.interview.domain.service.RequestService
+import com.tseytlin.via.interview.domain.repository.RequestRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -15,8 +15,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RequestDetailViewModel(
-    private val requestService: RequestService,
+    private val repository: RequestRepository,
 ) : ViewModel() {
+
+    // Resolved once from the repository so the screen and the action handlers share one
+    // instance. The repo is the source of truth for which request is being reviewed.
+    val request: Request = repository.currentRequest()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -34,15 +38,15 @@ class RequestDetailViewModel(
     private val _outcomeEvent = MutableSharedFlow<RequestOutcome>(extraBufferCapacity = 1)
     val outcomeEvent: SharedFlow<RequestOutcome> = _outcomeEvent.asSharedFlow()
 
-    fun approve(request: Request) = runAction(
-        action = { requestService.approve(request) },
+    fun approve() = runAction(
+        action = { repository.approve(request) },
         successMessage = APPROVED_MESSAGE,
         onSuccess = RequestOutcome::Approved,
         onFailure = { serviceError -> RequestOutcome.ApprovalFailed(serviceError) },
     )
 
-    fun reject(request: Request) = runAction(
-        action = { requestService.reject(request) },
+    fun reject() = runAction(
+        action = { repository.reject(request) },
         successMessage = REJECTED_MESSAGE,
         onSuccess = RequestOutcome::Rejected,
         onFailure = { RequestOutcome.Rejected(REJECTED_MESSAGE) },
