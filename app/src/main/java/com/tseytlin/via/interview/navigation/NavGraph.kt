@@ -26,8 +26,8 @@ fun NavGraph() {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen(
-                outcomeFlow = sharedViewModel.outcomeFlow,
                 onCreateRequest = { navController.navigate("detail") },
+                sharedViewModel = sharedViewModel,
             )
         }
         composable("detail") {
