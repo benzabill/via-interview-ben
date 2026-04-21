@@ -53,7 +53,7 @@ class RequestDetailViewModelTest {
         }
 
         val outcomes = mutableListOf<RequestOutcome>()
-        val job = launch { viewModel.navigationEvent.collect { outcomes.add(it) } }
+        val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
         viewModel.approve(request)
         runCurrent()
@@ -71,12 +71,12 @@ class RequestDetailViewModelTest {
     }
 
     @Test
-    fun `approve failure - isLoading resets, errorMessage set, ApprovalFailed emitted`() = runTest(testDispatcher) {
+    fun `approve failure - isLoading resets, raw service error surfaces in errorMessage and in ApprovalFailed outcome`() = runTest(testDispatcher) {
         val errorMsg = "Approval failed: server rejected the request"
         coEvery { mockService.approve(request) } returns RequestResult.Error(errorMsg)
 
         val outcomes = mutableListOf<RequestOutcome>()
-        val job = launch { viewModel.navigationEvent.collect { outcomes.add(it) } }
+        val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
         viewModel.approve(request)
         advanceUntilIdle()
@@ -84,7 +84,12 @@ class RequestDetailViewModelTest {
         assertFalse(viewModel.isLoading.value)
         assertNull(viewModel.successMessage.value)
         assertEquals(errorMsg, viewModel.errorMessage.value)
-        assertTrue(outcomes.any { it is RequestOutcome.ApprovalFailed })
+        val approvalFailed = outcomes.filterIsInstance<RequestOutcome.ApprovalFailed>().firstOrNull()
+        assertEquals(
+            "ApprovalFailed must carry the raw service error so Home can show a descriptive snackbar",
+            errorMsg,
+            approvalFailed?.message,
+        )
 
         job.cancel()
     }
@@ -94,7 +99,7 @@ class RequestDetailViewModelTest {
         coEvery { mockService.reject(request) } returns RequestResult.Success
 
         val outcomes = mutableListOf<RequestOutcome>()
-        val job = launch { viewModel.navigationEvent.collect { outcomes.add(it) } }
+        val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
         viewModel.reject(request)
         advanceUntilIdle()
@@ -114,7 +119,7 @@ class RequestDetailViewModelTest {
         coEvery { mockService.reject(request) } returns RequestResult.Error(errorMsg)
 
         val outcomes = mutableListOf<RequestOutcome>()
-        val job = launch { viewModel.navigationEvent.collect { outcomes.add(it) } }
+        val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
         viewModel.reject(request)
         advanceUntilIdle()
