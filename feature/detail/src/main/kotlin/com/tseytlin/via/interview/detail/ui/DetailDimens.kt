@@ -1,11 +1,10 @@
 package com.tseytlin.via.interview.detail.ui
 
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 // Shared outline width used by both the slide-to-approve track border and
 // the reject button outline so they stay visually in sync.
-internal val OutlineWidth = 2.dp
+internal val OutlineWidth = 1.dp
 
 // Slider — track
 internal val TrackHeight = 48.dp
@@ -16,12 +15,10 @@ internal val TrackCorner = 12.dp
 internal val ThumbStartInset = 5.dp
 
 // Slider — thumb
-internal val ThumbWidth = 56.dp
-internal val ThumbHeight = 56.dp
-internal val ThumbCorner = 10.dp
-internal val ThumbShadowElevation = 3.dp
+internal val ThumbWidth = 53.dp
+internal val ThumbHeight = 54.dp
+internal val ThumbCorner = 15.dp
 internal val CheckBadgeSize = 28.dp
-internal val CheckGlyphSize = 18.sp
 internal val ChevronSpacing = 2.dp
 
 // Screen layout

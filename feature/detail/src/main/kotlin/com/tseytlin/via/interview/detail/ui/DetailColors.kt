@@ -21,4 +21,3 @@ internal val LabelOnLight = Color(0xFF285976)
 // Slide-to-approve — thumb
 internal val ThumbColor = Color.White
 internal val ThumbShadow = Color(0x29000000)
-internal val CheckBadgeColor = Color(0xFF87D6CD)
