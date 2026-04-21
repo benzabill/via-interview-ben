@@ -42,3 +42,7 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T00:15Z | `create new request button should have these properties width: 331; height: 48; top: 537px; left: 41px; border-radius: 12px; border-width: 1px; background: #285976; border: 1px solid #87D6CD box-shadow: 0px 3px 3px 0px #00000029;` |
 | 2026-04-21T00:14Z | `I think we are missing the concept in the original spec that gets use to Request Approved Request Rejected snackbar` |
 | 2026-04-21T00:15Z | `snackbar dimens width: 370; height: 48; top: 822px; left: 21px; border-radius: 4px; animation-duration: 0ms;` |
+| 2026-04-21T00:19Z | `pull main` |
+| 2026-04-21T00:27Z | `work on top of fresh main` |
+| 2026-04-21T00:29Z | `/Users/btseytlin/Downloads/slide_states.pdf carefully implement the sliders to match the ui specifications` |
+| 2026-04-21T00:31Z | `/Users/btseytlin/Downloads/via_figma_designs.pdf review/look at the designs again - lets make sure we're implemented to look as closely as possible to the designs. Like the Reject button being next to the slide to accept button` |

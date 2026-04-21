@@ -32,16 +32,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.home.viewmodel.RequestSharedViewModel
 import org.koin.androidx.compose.koinViewModel
 
 private val ViaLightBlue = Color(0xFFD6EAF0)
+private val HomeTitleColor = Color(0xFF0E3B5B)
 private val ButtonBackground = Color(0xFF285976)
 private val ButtonBorder = Color(0xFF87D6CD)
-private val SuccessGreen = Color(0xFF2E7D32)
-private val ErrorPink = Color(0xFFE91E63)
+private val SuccessGreen = Color(0xFF8EC89A)
+private val ErrorPink = Color(0xFFE8A6A6)
+private val SnackbarTextColor = Color(0xFF1A1A1A)
 private val ButtonShadowColor = Color(0x29000000)
 
 private class OutcomeSnackbarVisuals(
@@ -50,7 +53,7 @@ private class OutcomeSnackbarVisuals(
 ) : SnackbarVisuals {
     override val actionLabel: String? = null
     override val duration: SnackbarDuration = SnackbarDuration.Short
-    override val withDismissAction: Boolean = false
+    override val withDismissAction: Boolean = true
 }
 
 @Composable
@@ -76,7 +79,16 @@ fun HomeScreen(
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.weight(231f))
+            Text(
+                text = "Home",
+                color = HomeTitleColor,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp, top = 24.dp),
+            )
+            Spacer(modifier = Modifier.weight(180f))
             ViaLogo()
             Spacer(modifier = Modifier.weight(68f))
             CreateRequestButton(onClick = onCreateRequest)
@@ -159,7 +171,8 @@ private fun OutcomeSnackbar(data: SnackbarData) {
             .height(48.dp),
         shape = RoundedCornerShape(4.dp),
         containerColor = container,
-        contentColor = Color.White,
+        contentColor = SnackbarTextColor,
+        dismissActionContentColor = SnackbarTextColor,
     )
 }
 
