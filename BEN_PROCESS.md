@@ -96,3 +96,6 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T02:00Z | `add a little elevation shadow underneath the snackbar too` |
 | 2026-04-21T02:03Z | `fix confglicts and push` |
 | 2026-04-21T02:08Z | `elevation not showing on snackbar, just delete it and push` |
+| 2026-04-21T02:26Z | `all the code should be under /kotlin not /java, since we're kotlin only` |
+| 2026-04-21T02:32Z | `push make pr` |
+| 2026-04-21T02:33Z | `push pr` |
