@@ -159,12 +159,6 @@ private fun OutcomeSnackbar(data: SnackbarData) {
             .padding(horizontal = SnackbarHorizontalMargin)
             .fillMaxWidth()
             .height(SnackbarHeight)
-            .shadow(
-                elevation = SnackbarShadowElevation,
-                shape = RoundedCornerShape(SnackbarCorner),
-                spotColor = SnackbarShadowColor,
-                ambientColor = SnackbarShadowColor,
-            )
             .clip(RoundedCornerShape(SnackbarCorner))
             .background(container)
             .padding(horizontal = SnackbarContentPadding),

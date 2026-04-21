@@ -24,6 +24,5 @@ internal val SnackbarHorizontalMargin = 21.dp
 internal val SnackbarHeight = 48.dp
 internal val SnackbarCorner = 4.dp
 internal val SnackbarContentPadding = 16.dp
-internal val SnackbarShadowElevation = 3.dp
 internal val SnackbarDismissHitTarget = 32.dp
 internal val SnackbarDismissGlyphSize = 22.sp

@@ -93,3 +93,6 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T01:56Z | `any other cleanup we can do out of the git repo to clean out unused things?` |
 | 2026-04-21T01:58Z | `clean up all 3` |
 | 2026-04-21T01:59Z | `i dont see a pr?` |
+| 2026-04-21T02:00Z | `add a little elevation shadow underneath the snackbar too` |
+| 2026-04-21T02:03Z | `fix confglicts and push` |
+| 2026-04-21T02:08Z | `elevation not showing on snackbar, just delete it and push` |
