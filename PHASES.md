@@ -111,3 +111,8 @@ Each phase = one PR. Each PR must build cleanly and pass its own tests before me
 - Remove any placeholder/stub code
 - Final review against `REQUIREMENTS.md` checklist — all boxes ticked
 - ✅ Testable: all unit tests pass, UI visually matches Figma
+
+## ...Final Phase — Extra Manual Polish
+**Goal:** UI to ACTUALLY match Figma and Requirements
+- Claude is good but not perfect, it requires a close eye for proper polish and performance:
+- Additionally iterated several more times to get to a clean user experience that matched designs closely
