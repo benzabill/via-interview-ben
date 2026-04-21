@@ -56,7 +56,8 @@ class RequestDetailViewModelTest {
         assertFalse(viewModel.isLoading.value)
         assertEquals("Request approved", viewModel.successMessage.value)
         assertNull(viewModel.errorMessage.value)
-        assertTrue(outcomes.any { it is RequestOutcome.Approved })
+        val approved = outcomes.filterIsInstance<RequestOutcome.Approved>().firstOrNull()
+        assertEquals("Request approved", approved?.message)
 
         job.cancel()
     }

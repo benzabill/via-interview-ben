@@ -36,3 +36,9 @@ All commands and inputs tracked with timestamps.
 | 2026-04-20T23:55Z | `continue phase 7` |
 | 2026-04-21T00:09Z | `are you able to look at the figma specs on the screens? https://www.figma.com/design/pouKokTVOWcW04FJJIu755/VIA-Interview?node-id=0-1&p=f&t=EhBUmkWXLE6OpUUY-0` |
 | 2026-04-21T00:10Z | `can we do figma mcp through claude code terminal` |
+| 2026-04-21T00:14Z | `pull down main` |
+| 2026-04-21T00:13Z | `on a separate git worktree here, new pr for figma polish` |
+| 2026-04-21T00:14Z | `/Users/btseytlin/Downloads/VIA Logo 1.svg here is the logo put it inside of a white circle with these dimens width: 238; height: 238; top: 231px; left: 81px; angle: 0 deg; opacity: 1;` |
+| 2026-04-21T00:15Z | `create new request button should have these properties width: 331; height: 48; top: 537px; left: 41px; border-radius: 12px; border-width: 1px; background: #285976; border: 1px solid #87D6CD box-shadow: 0px 3px 3px 0px #00000029;` |
+| 2026-04-21T00:14Z | `I think we are missing the concept in the original spec that gets use to Request Approved Request Rejected snackbar` |
+| 2026-04-21T00:15Z | `snackbar dimens width: 370; height: 48; top: 822px; left: 21px; border-radius: 4px; animation-duration: 0ms;` |

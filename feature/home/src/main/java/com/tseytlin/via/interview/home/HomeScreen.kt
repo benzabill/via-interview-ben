@@ -128,11 +128,8 @@ private fun ViaLogo() {
     }
 }
 
-private fun RequestOutcome.toSnackbarVisuals(): SnackbarVisuals = when (this) {
-    RequestOutcome.Approved ->
-        OutcomeSnackbarVisuals(message = "Request approved", isSuccess = true)
-    is RequestOutcome.Rejected ->
-        OutcomeSnackbarVisuals(message = message, isSuccess = false)
-    is RequestOutcome.ApprovalFailed ->
-        OutcomeSnackbarVisuals(message = message, isSuccess = false)
-}
+private fun RequestOutcome.toSnackbarVisuals(): SnackbarVisuals =
+    OutcomeSnackbarVisuals(
+        message = message,
+        isSuccess = this is RequestOutcome.Approved,
+    )
