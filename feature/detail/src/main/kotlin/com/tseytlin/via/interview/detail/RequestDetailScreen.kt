@@ -19,12 +19,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +45,7 @@ fun RequestDetailScreen(
 ) {
     val viewModel: RequestDetailViewModel = koinViewModel()
     val isLoading by viewModel.isLoading.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     StatusBarIconsLight()
 
@@ -50,11 +55,20 @@ fun RequestDetailScreen(
 
     LaunchedEffect(viewModel) {
         viewModel.outcomeEvent.collect { outcome ->
-            onNavigateBack(outcome)
+            // Approval failures keep the user on this screen so they can retry
+            // (or reject). Success and rejection both navigate back so the
+            // snackbar fires on Home.
+            when (outcome) {
+                is RequestOutcome.ApprovalFailed -> snackbarHostState.showSnackbar(outcome.message)
+                else -> onNavigateBack(outcome)
+            }
         }
     }
 
-    Scaffold(containerColor = DetailBackground) { padding ->
+    Scaffold(
+        containerColor = DetailBackground,
+        snackbarHost = { SnackbarHost(snackbarHostState) { Snackbar(snackbarData = it) } },
+    ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             Column(
                 modifier = Modifier
