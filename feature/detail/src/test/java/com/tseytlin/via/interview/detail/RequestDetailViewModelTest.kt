@@ -6,6 +6,7 @@ import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.domain.model.RequestResult
 import com.tseytlin.via.interview.domain.service.RequestService
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -172,6 +173,23 @@ class RequestDetailViewModelTest {
         )
         advanceUntilIdle()
         assertEquals("Request rejected", viewModel.successMessage.value)
+    }
+
+    @Test
+    fun `a second approve tapped while the first is in flight is a no-op`() = runTest(testDispatcher) {
+        coEvery { mockService.approve(request) } coAnswers {
+            delay(SERVICE_DELAY_MS)
+            RequestResult.Success
+        }
+
+        viewModel.approve(request)
+        // Synchronous re-entry: second call happens before the scheduler runs the first
+        // coroutine. The guard must be based on _isLoading being set synchronously, not
+        // inside the launched block, or this second call would be able to slip through.
+        viewModel.approve(request)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockService.approve(request) }
     }
 
     private companion object {

@@ -27,7 +27,11 @@ class RequestDetailViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    private val _outcomeEvent = MutableSharedFlow<RequestOutcome>()
+    // extraBufferCapacity = 1 so emit never suspends waiting for a collector. The screen's
+    // LaunchedEffect attaches a collector before any user action, so in practice a subscriber
+    // is always present — but buffering removes the assumption, keeping the VM's coroutine
+    // (and the finally block below) unblocked regardless of collector state.
+    private val _outcomeEvent = MutableSharedFlow<RequestOutcome>(extraBufferCapacity = 1)
     val outcomeEvent: SharedFlow<RequestOutcome> = _outcomeEvent.asSharedFlow()
 
     fun approve(request: Request) = runAction(
@@ -50,21 +54,33 @@ class RequestDetailViewModel(
         onSuccess: (String) -> RequestOutcome,
         onFailure: (serviceError: String) -> RequestOutcome,
     ) {
+        // Guard + state reset run synchronously before the launch. If they lived inside
+        // the coroutine body, two rapid taps could both queue their launches before either
+        // ran, and both would pass the guard. Setting _isLoading here makes the guard
+        // effective against same-thread re-entry.
+        if (_isLoading.value) return
+        _isLoading.value = true
+        _successMessage.value = null
+        _errorMessage.value = null
+
         viewModelScope.launch {
-            _isLoading.value = true
-            _successMessage.value = null
-            _errorMessage.value = null
-            when (val result = action()) {
-                is RequestResult.Success -> {
-                    _successMessage.value = successMessage
-                    _outcomeEvent.emit(onSuccess(successMessage))
+            try {
+                when (val result = action()) {
+                    is RequestResult.Success -> {
+                        _successMessage.value = successMessage
+                        _outcomeEvent.emit(onSuccess(successMessage))
+                    }
+                    is RequestResult.Error -> {
+                        _errorMessage.value = result.message
+                        _outcomeEvent.emit(onFailure(result.message))
+                    }
                 }
-                is RequestResult.Error -> {
-                    _errorMessage.value = result.message
-                    _outcomeEvent.emit(onFailure(result.message))
-                }
+            } finally {
+                // finally (not a trailing statement) so isLoading resets even if the coroutine
+                // is cancelled mid-flight (VM cleared, parent scope cancelled) or the service
+                // throws an unexpected exception.
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
     }
 
