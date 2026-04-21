@@ -21,3 +21,7 @@ internal val LabelOnLight = Color(0xFF285976)
 // Slide-to-approve — thumb
 internal val ThumbColor = Color.White
 internal val ThumbShadow = Color(0x29000000)
+
+// Error snackbar (shown when approve fails and we stay on Detail for retry)
+internal val ErrorSnackbarBackground = Color(0xFFF4A3A3)
+internal val ErrorSnackbarTextColor = Color(0xFF4A4A4A)

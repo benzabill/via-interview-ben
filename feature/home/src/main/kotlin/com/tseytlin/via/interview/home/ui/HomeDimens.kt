@@ -26,3 +26,5 @@ internal val SnackbarCorner = 4.dp
 internal val SnackbarContentPadding = 16.dp
 internal val SnackbarDismissHitTarget = 32.dp
 internal val SnackbarDismissGlyphSize = 22.sp
+// Lifts the snackbar off the bottom so it doesn't clash with the software nav buttons.
+internal val SnackbarBottomInset = 4.dp

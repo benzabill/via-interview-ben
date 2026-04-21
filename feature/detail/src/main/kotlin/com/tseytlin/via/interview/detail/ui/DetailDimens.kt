@@ -1,6 +1,7 @@
 package com.tseytlin.via.interview.detail.ui
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 // Shared outline width used by both the slide-to-approve track border and
 // the reject button outline so they stay visually in sync.
@@ -37,3 +38,12 @@ internal val CardContentGap = 12.dp
 internal val RejectButtonWidth = 104.dp
 internal val RejectButtonHeight = TrackHeight
 internal val RejectButtonCorner = 12.dp
+
+// Error snackbar — tighter than Home's success/error bar since it's a
+// transient retry cue, not a terminal confirmation.
+internal val ErrorSnackbarHorizontalMargin = 16.dp
+internal val ErrorSnackbarHeight = 44.dp
+internal val ErrorSnackbarCorner = 4.dp
+internal val ErrorSnackbarContentPadding = 12.dp
+internal val ErrorSnackbarDismissHitTarget = 28.dp
+internal val ErrorSnackbarDismissGlyphSize = 20.sp

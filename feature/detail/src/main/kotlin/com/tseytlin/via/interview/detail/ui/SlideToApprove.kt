@@ -75,7 +75,6 @@ fun SlideToApprove(
             .onSizeChanged { trackWidthPx = it.width.toFloat() },
         contentAlignment = Alignment.CenterStart,
     ) {
-
         val progress by remember(maxOffsetPx) {
             derivedStateOf {
                 if (maxOffsetPx <= 0f) 0f else (offsetX.value / maxOffsetPx).coerceIn(0f, 1f)
@@ -87,7 +86,18 @@ fun SlideToApprove(
         )
 
         LaunchedEffect(enabled, committed) {
-            if (!enabled && !committed) offsetX.snapTo(0f)
+            when {
+                // Caller disabled the slider before the user committed (e.g. button
+                // wired off). Snap back to the resting position.
+                !enabled && !committed -> offsetX.snapTo(0f)
+                // Caller re-enabled the slider after we committed. Success navigates
+                // away before this can fire, so in practice this is the failure path
+                // — put the slider back in its initial state so the user can retry.
+                enabled && committed -> {
+                    committed = false
+                    offsetX.snapTo(0f)
+                }
+            }
         }
 
         Box(

@@ -1,7 +1,7 @@
 package com.tseytlin.via.interview.domain
 
 import com.tseytlin.via.interview.domain.model.Request
-import org.junit.Assert.assertEquals
+import kotlin.test.assertEquals
 import org.junit.Test
 
 class RequestTest {

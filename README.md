@@ -2,7 +2,7 @@
 
 Android technical interview task: a Request approval app built with MVVM + Jetpack Compose.
 
-**Repository:** https://github.com/benzabill/via-interview-tseytlin/tree/main
+**Repository:** https://github.com/benzabill/via-interview-ben/tree/main
 
 ## Stack
 

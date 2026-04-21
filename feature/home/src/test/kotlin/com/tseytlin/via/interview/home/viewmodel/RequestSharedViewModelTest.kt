@@ -9,8 +9,8 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlin.test.assertEquals
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -55,10 +55,10 @@ class RequestSharedViewModelTest {
         advanceUntilIdle()
 
         assertEquals(
-            "outcome emitted before a collector attached should survive in the replay cache " +
-                "so the snackbar fires after Home re-subscribes on back-nav",
             listOf<RequestOutcome>(RequestOutcome.Rejected("Request rejected")),
             received,
+            "outcome emitted before a collector attached should survive in the replay cache " +
+                "so the snackbar fires after Home re-subscribes on back-nav",
         )
 
         job.cancel()

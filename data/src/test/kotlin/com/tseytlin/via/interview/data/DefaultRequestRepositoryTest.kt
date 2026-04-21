@@ -8,8 +8,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertSame
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import org.junit.Test
 
 class DefaultRequestRepositoryTest {
@@ -21,7 +21,7 @@ class DefaultRequestRepositoryTest {
     fun `currentRequest returns a stable sample`() {
         val first = repository.currentRequest()
         val second = repository.currentRequest()
-        assertSame("repeated calls must return the same instance", first, second)
+        assertSame(first, second, "repeated calls must return the same instance")
     }
 
     @Test

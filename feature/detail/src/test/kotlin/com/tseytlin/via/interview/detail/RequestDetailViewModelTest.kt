@@ -19,11 +19,12 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -59,15 +60,15 @@ class RequestDetailViewModelTest {
 
         viewModel.approve()
         runCurrent()
-        assertTrue("isLoading should be true while service call is in flight", viewModel.isLoading.value)
+        assertTrue(viewModel.isLoading.value, "isLoading should be true while service call is in flight")
 
         advanceUntilIdle()
 
         assertFalse(viewModel.isLoading.value)
         assertEquals("Request approved", viewModel.successMessage.value)
         assertNull(viewModel.errorMessage.value)
-        val approved = outcomes.filterIsInstance<RequestOutcome.Approved>().firstOrNull()
-        assertEquals("Request approved", approved?.message)
+        val approved = assertIs<RequestOutcome.Approved>(outcomes.single())
+        assertEquals("Request approved", approved.message)
 
         job.cancel()
     }
@@ -86,11 +87,11 @@ class RequestDetailViewModelTest {
         assertFalse(viewModel.isLoading.value)
         assertNull(viewModel.successMessage.value)
         assertEquals(errorMsg, viewModel.errorMessage.value)
-        val approvalFailed = outcomes.filterIsInstance<RequestOutcome.ApprovalFailed>().firstOrNull()
+        val approvalFailed = assertIs<RequestOutcome.ApprovalFailed>(outcomes.single())
         assertEquals(
-            "ApprovalFailed must carry the raw service error so Home can show a descriptive snackbar",
             errorMsg,
-            approvalFailed?.message,
+            approvalFailed.message,
+            "ApprovalFailed must carry the raw service error so Home can show a descriptive snackbar",
         )
 
         job.cancel()
@@ -109,8 +110,8 @@ class RequestDetailViewModelTest {
         assertFalse(viewModel.isLoading.value)
         assertEquals("Request rejected", viewModel.successMessage.value)
         assertNull(viewModel.errorMessage.value)
-        val rejected = outcomes.filterIsInstance<RequestOutcome.Rejected>().firstOrNull()
-        assertEquals("Request rejected", rejected?.message)
+        val rejected = assertIs<RequestOutcome.Rejected>(outcomes.single())
+        assertEquals("Request rejected", rejected.message)
 
         job.cancel()
     }
@@ -129,8 +130,8 @@ class RequestDetailViewModelTest {
         assertFalse(viewModel.isLoading.value)
         assertNull(viewModel.successMessage.value)
         assertEquals(errorMsg, viewModel.errorMessage.value)
-        val rejected = outcomes.filterIsInstance<RequestOutcome.Rejected>().firstOrNull()
-        assertEquals("Request rejected", rejected?.message)
+        val rejected = assertIs<RequestOutcome.Rejected>(outcomes.single())
+        assertEquals("Request rejected", rejected.message)
 
         job.cancel()
     }
@@ -153,10 +154,10 @@ class RequestDetailViewModelTest {
         }
         viewModel.approve()
         runCurrent()
-        assertTrue("sanity: second approve should be in flight", viewModel.isLoading.value)
+        assertTrue(viewModel.isLoading.value, "sanity: second approve should be in flight")
         assertNull(
-            "errorMessage from the prior failed call must be cleared at the start of the next action",
             viewModel.errorMessage.value,
+            "errorMessage from the prior failed call must be cleared at the start of the next action",
         )
         advanceUntilIdle()
         assertEquals("Request approved", viewModel.successMessage.value)
@@ -169,8 +170,8 @@ class RequestDetailViewModelTest {
         viewModel.reject()
         runCurrent()
         assertNull(
-            "successMessage from the prior approve must be cleared at the start of the next action",
             viewModel.successMessage.value,
+            "successMessage from the prior approve must be cleared at the start of the next action",
         )
         advanceUntilIdle()
         assertEquals("Request rejected", viewModel.successMessage.value)

@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
     testImplementation(libs.junit)
+    testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
 }

@@ -3,16 +3,22 @@ package com.tseytlin.via.interview.detail.ui
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,12 +26,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarData
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +53,7 @@ fun RequestDetailScreen(
 ) {
     val viewModel: RequestDetailViewModel = koinViewModel()
     val isLoading by viewModel.isLoading.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     StatusBarIconsLight()
 
@@ -51,11 +63,20 @@ fun RequestDetailScreen(
 
     LaunchedEffect(viewModel) {
         viewModel.outcomeEvent.collect { outcome ->
-            onNavigateBack(outcome)
+            // Approval failures keep the user on this screen so they can retry
+            // (or reject). Success and rejection both navigate back so the
+            // snackbar fires on Home.
+            when (outcome) {
+                is RequestOutcome.ApprovalFailed -> snackbarHostState.showSnackbar(outcome.message)
+                else -> onNavigateBack(outcome)
+            }
         }
     }
 
-    Scaffold(containerColor = DetailBackground) { padding ->
+    Scaffold(
+        containerColor = DetailBackground,
+        snackbarHost = { SnackbarHost(snackbarHostState) { ErrorSnackbar(it) } },
+    ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             Column(
                 modifier = Modifier
@@ -156,6 +177,43 @@ private fun RequestCard(request: Request, modifier: Modifier = Modifier) {
                 text = request.description,
                 color = CardBodyColor,
                 style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+// Matches the visual language of Home's error snackbar (red bar, dark-grey
+// text, trailing ×), but a little tighter — this is a transient retry cue,
+// not a terminal confirmation, so it shouldn't dominate the screen.
+@Composable
+private fun ErrorSnackbar(data: SnackbarData) {
+    Row(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(horizontal = ErrorSnackbarHorizontalMargin)
+            .fillMaxWidth()
+            .height(ErrorSnackbarHeight)
+            .clip(RoundedCornerShape(ErrorSnackbarCorner))
+            .background(ErrorSnackbarBackground)
+            .padding(horizontal = ErrorSnackbarContentPadding),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = data.visuals.message,
+            color = ErrorSnackbarTextColor,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+        )
+        Box(
+            modifier = Modifier
+                .size(ErrorSnackbarDismissHitTarget)
+                .clickable { data.dismiss() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "×",
+                color = ErrorSnackbarTextColor,
+                fontSize = ErrorSnackbarDismissGlyphSize,
             )
         }
     }
