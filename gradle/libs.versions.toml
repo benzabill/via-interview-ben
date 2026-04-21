@@ -35,6 +35,7 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 # Koin
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 # Coroutines
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }

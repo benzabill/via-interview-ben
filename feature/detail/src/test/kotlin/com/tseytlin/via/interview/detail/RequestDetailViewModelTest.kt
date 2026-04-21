@@ -4,9 +4,10 @@ import com.tseytlin.via.interview.detail.viewmodel.RequestDetailViewModel
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.domain.model.RequestResult
-import com.tseytlin.via.interview.domain.service.RequestService
+import com.tseytlin.via.interview.domain.repository.RequestRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,15 +31,15 @@ import org.junit.Test
 class RequestDetailViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-    private val mockService: RequestService = mockk()
-    private lateinit var viewModel: RequestDetailViewModel
-
     private val request = Request(id = "1", title = "Heading 1", description = "Lorem ipsum")
+    private val mockRepository: RequestRepository = mockk()
+    private lateinit var viewModel: RequestDetailViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = RequestDetailViewModel(mockService)
+        every { mockRepository.currentRequest() } returns request
+        viewModel = RequestDetailViewModel(mockRepository)
     }
 
     @After
@@ -48,7 +49,7 @@ class RequestDetailViewModelTest {
 
     @Test
     fun `approve success - isLoading flips on then off, successMessage set, Approved emitted`() = runTest(testDispatcher) {
-        coEvery { mockService.approve(request) } coAnswers {
+        coEvery { mockRepository.approve(request) } coAnswers {
             delay(SERVICE_DELAY_MS)
             RequestResult.Success
         }
@@ -56,7 +57,7 @@ class RequestDetailViewModelTest {
         val outcomes = mutableListOf<RequestOutcome>()
         val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
-        viewModel.approve(request)
+        viewModel.approve()
         runCurrent()
         assertTrue("isLoading should be true while service call is in flight", viewModel.isLoading.value)
 
@@ -74,12 +75,12 @@ class RequestDetailViewModelTest {
     @Test
     fun `approve failure - isLoading resets, raw service error surfaces in errorMessage and in ApprovalFailed outcome`() = runTest(testDispatcher) {
         val errorMsg = "Approval failed: server rejected the request"
-        coEvery { mockService.approve(request) } returns RequestResult.Error(errorMsg)
+        coEvery { mockRepository.approve(request) } returns RequestResult.Error(errorMsg)
 
         val outcomes = mutableListOf<RequestOutcome>()
         val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
-        viewModel.approve(request)
+        viewModel.approve()
         advanceUntilIdle()
 
         assertFalse(viewModel.isLoading.value)
@@ -97,12 +98,12 @@ class RequestDetailViewModelTest {
 
     @Test
     fun `reject success - isLoading resets, successMessage set, Rejected emitted`() = runTest(testDispatcher) {
-        coEvery { mockService.reject(request) } returns RequestResult.Success
+        coEvery { mockRepository.reject(request) } returns RequestResult.Success
 
         val outcomes = mutableListOf<RequestOutcome>()
         val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
-        viewModel.reject(request)
+        viewModel.reject()
         advanceUntilIdle()
 
         assertFalse(viewModel.isLoading.value)
@@ -117,12 +118,12 @@ class RequestDetailViewModelTest {
     @Test
     fun `reject failure - isLoading resets, raw error in errorMessage, Rejected emitted with normalized text`() = runTest(testDispatcher) {
         val errorMsg = "Rejection failed: network error"
-        coEvery { mockService.reject(request) } returns RequestResult.Error(errorMsg)
+        coEvery { mockRepository.reject(request) } returns RequestResult.Error(errorMsg)
 
         val outcomes = mutableListOf<RequestOutcome>()
         val job = launch { viewModel.outcomeEvent.collect { outcomes.add(it) } }
 
-        viewModel.reject(request)
+        viewModel.reject()
         advanceUntilIdle()
 
         assertFalse(viewModel.isLoading.value)
@@ -140,17 +141,17 @@ class RequestDetailViewModelTest {
         // so we can observe the mid-flight state — which is precisely when the stale
         // errorMessage must already be cleared (before any new result arrives).
         val firstErrorMsg = "Approval failed: first call"
-        coEvery { mockService.approve(request) } returns RequestResult.Error(firstErrorMsg)
+        coEvery { mockRepository.approve(request) } returns RequestResult.Error(firstErrorMsg)
 
-        viewModel.approve(request)
+        viewModel.approve()
         advanceUntilIdle()
         assertEquals(firstErrorMsg, viewModel.errorMessage.value)
 
-        coEvery { mockService.approve(request) } coAnswers {
+        coEvery { mockRepository.approve(request) } coAnswers {
             delay(SERVICE_DELAY_MS)
             RequestResult.Success
         }
-        viewModel.approve(request)
+        viewModel.approve()
         runCurrent()
         assertTrue("sanity: second approve should be in flight", viewModel.isLoading.value)
         assertNull(
@@ -161,11 +162,11 @@ class RequestDetailViewModelTest {
         assertEquals("Request approved", viewModel.successMessage.value)
 
         // Flip the direction: stale successMessage must also be cleared at the start of the next action.
-        coEvery { mockService.reject(request) } coAnswers {
+        coEvery { mockRepository.reject(request) } coAnswers {
             delay(SERVICE_DELAY_MS)
             RequestResult.Success
         }
-        viewModel.reject(request)
+        viewModel.reject()
         runCurrent()
         assertNull(
             "successMessage from the prior approve must be cleared at the start of the next action",
@@ -177,19 +178,19 @@ class RequestDetailViewModelTest {
 
     @Test
     fun `a second approve tapped while the first is in flight is a no-op`() = runTest(testDispatcher) {
-        coEvery { mockService.approve(request) } coAnswers {
+        coEvery { mockRepository.approve(request) } coAnswers {
             delay(SERVICE_DELAY_MS)
             RequestResult.Success
         }
 
-        viewModel.approve(request)
+        viewModel.approve()
         // Synchronous re-entry: second call happens before the scheduler runs the first
         // coroutine. The guard must be based on _isLoading being set synchronously, not
         // inside the launched block, or this second call would be able to slip through.
-        viewModel.approve(request)
+        viewModel.approve()
         advanceUntilIdle()
 
-        coVerify(exactly = 1) { mockService.approve(request) }
+        coVerify(exactly = 1) { mockRepository.approve(request) }
     }
 
     private companion object {
