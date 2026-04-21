@@ -33,6 +33,7 @@ class RequestDetailViewModel(
     fun approve(request: Request) = runAction(
         action = { requestService.approve(request) },
         successMessage = "Request approved",
+        outcomeErrorMessage = "Request rejected",
         successOutcome = RequestOutcome::Approved,
         errorOutcome = RequestOutcome::ApprovalFailed,
     )
@@ -40,6 +41,7 @@ class RequestDetailViewModel(
     fun reject(request: Request) = runAction(
         action = { requestService.reject(request) },
         successMessage = "Request rejected",
+        outcomeErrorMessage = "Request rejected",
         successOutcome = RequestOutcome::Rejected,
         errorOutcome = RequestOutcome::Rejected,
     )
@@ -47,6 +49,7 @@ class RequestDetailViewModel(
     private fun runAction(
         action: suspend () -> RequestResult,
         successMessage: String,
+        outcomeErrorMessage: String,
         successOutcome: (String) -> RequestOutcome,
         errorOutcome: (String) -> RequestOutcome,
     ) {
@@ -61,7 +64,7 @@ class RequestDetailViewModel(
                 }
                 is RequestResult.Error -> {
                     _errorMessage.value = result.message
-                    _navigationEvent.emit(errorOutcome(result.message))
+                    _navigationEvent.emit(errorOutcome(outcomeErrorMessage))
                 }
             }
             _isLoading.value = false
