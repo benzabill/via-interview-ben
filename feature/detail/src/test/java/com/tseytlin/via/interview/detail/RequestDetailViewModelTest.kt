@@ -6,6 +6,7 @@ import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.domain.model.RequestResult
 import com.tseytlin.via.interview.domain.service.RequestService
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -131,6 +132,64 @@ class RequestDetailViewModelTest {
         assertEquals("Request rejected", rejected?.message)
 
         job.cancel()
+    }
+
+    @Test
+    fun `a new action clears stale success and error messages before the new result arrives`() = runTest(testDispatcher) {
+        // First call fails and sets errorMessage. We then re-stub the next approve to suspend,
+        // so we can observe the mid-flight state — which is precisely when the stale
+        // errorMessage must already be cleared (before any new result arrives).
+        val firstErrorMsg = "Approval failed: first call"
+        coEvery { mockService.approve(request) } returns RequestResult.Error(firstErrorMsg)
+
+        viewModel.approve(request)
+        advanceUntilIdle()
+        assertEquals(firstErrorMsg, viewModel.errorMessage.value)
+
+        coEvery { mockService.approve(request) } coAnswers {
+            delay(SERVICE_DELAY_MS)
+            RequestResult.Success
+        }
+        viewModel.approve(request)
+        runCurrent()
+        assertTrue("sanity: second approve should be in flight", viewModel.isLoading.value)
+        assertNull(
+            "errorMessage from the prior failed call must be cleared at the start of the next action",
+            viewModel.errorMessage.value,
+        )
+        advanceUntilIdle()
+        assertEquals("Request approved", viewModel.successMessage.value)
+
+        // Flip the direction: stale successMessage must also be cleared at the start of the next action.
+        coEvery { mockService.reject(request) } coAnswers {
+            delay(SERVICE_DELAY_MS)
+            RequestResult.Success
+        }
+        viewModel.reject(request)
+        runCurrent()
+        assertNull(
+            "successMessage from the prior approve must be cleared at the start of the next action",
+            viewModel.successMessage.value,
+        )
+        advanceUntilIdle()
+        assertEquals("Request rejected", viewModel.successMessage.value)
+    }
+
+    @Test
+    fun `a second approve tapped while the first is in flight is a no-op`() = runTest(testDispatcher) {
+        coEvery { mockService.approve(request) } coAnswers {
+            delay(SERVICE_DELAY_MS)
+            RequestResult.Success
+        }
+
+        viewModel.approve(request)
+        // Synchronous re-entry: second call happens before the scheduler runs the first
+        // coroutine. The guard must be based on _isLoading being set synchronously, not
+        // inside the launched block, or this second call would be able to slip through.
+        viewModel.approve(request)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockService.approve(request) }
     }
 
     private companion object {
