@@ -30,45 +30,41 @@ class RequestDetailViewModel(
     private val _navigationEvent = MutableSharedFlow<RequestOutcome>()
     val navigationEvent: SharedFlow<RequestOutcome> = _navigationEvent.asSharedFlow()
 
-    fun approve(request: Request) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _successMessage.value = null
-            _errorMessage.value = null
-            when (val result = requestService.approve(request)) {
-                is RequestResult.Success -> {
-                    val message = "Request approved"
-                    _successMessage.value = message
-                    _isLoading.value = false
-                    _navigationEvent.emit(RequestOutcome.Approved(message))
-                }
-                is RequestResult.Error -> {
-                    _errorMessage.value = result.message
-                    _isLoading.value = false
-                    _navigationEvent.emit(RequestOutcome.ApprovalFailed(result.message))
-                }
-            }
-        }
-    }
+    fun approve(request: Request) = runAction(
+        action = { requestService.approve(request) },
+        successMessage = "Request approved",
+        successOutcome = RequestOutcome::Approved,
+        errorOutcome = RequestOutcome::ApprovalFailed,
+    )
 
-    fun reject(request: Request) {
+    fun reject(request: Request) = runAction(
+        action = { requestService.reject(request) },
+        successMessage = "Request rejected",
+        successOutcome = RequestOutcome::Rejected,
+        errorOutcome = RequestOutcome::Rejected,
+    )
+
+    private fun runAction(
+        action: suspend () -> RequestResult,
+        successMessage: String,
+        successOutcome: (String) -> RequestOutcome,
+        errorOutcome: (String) -> RequestOutcome,
+    ) {
         viewModelScope.launch {
             _isLoading.value = true
             _successMessage.value = null
             _errorMessage.value = null
-            when (val result = requestService.reject(request)) {
+            when (val result = action()) {
                 is RequestResult.Success -> {
-                    val message = "Request approved"
-                    _successMessage.value = message
-                    _isLoading.value = false
-                    _navigationEvent.emit(RequestOutcome.Approved(message))
+                    _successMessage.value = successMessage
+                    _navigationEvent.emit(successOutcome(successMessage))
                 }
                 is RequestResult.Error -> {
                     _errorMessage.value = result.message
-                    _isLoading.value = false
-                    _navigationEvent.emit(RequestOutcome.Rejected(result.message))
+                    _navigationEvent.emit(errorOutcome(result.message))
                 }
             }
+            _isLoading.value = false
         }
     }
 }

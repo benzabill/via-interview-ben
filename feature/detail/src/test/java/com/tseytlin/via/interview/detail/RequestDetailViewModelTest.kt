@@ -9,10 +9,12 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -44,13 +46,19 @@ class RequestDetailViewModelTest {
     }
 
     @Test
-    fun `approve success - isLoading resets, successMessage set, Approved emitted`() = runTest(testDispatcher) {
-        coEvery { mockService.approve(request) } returns RequestResult.Success
+    fun `approve success - isLoading flips on then off, successMessage set, Approved emitted`() = runTest(testDispatcher) {
+        coEvery { mockService.approve(request) } coAnswers {
+            delay(SERVICE_DELAY_MS)
+            RequestResult.Success
+        }
 
         val outcomes = mutableListOf<RequestOutcome>()
         val job = launch { viewModel.navigationEvent.collect { outcomes.add(it) } }
 
         viewModel.approve(request)
+        runCurrent()
+        assertTrue("isLoading should be true while service call is in flight", viewModel.isLoading.value)
+
         advanceUntilIdle()
 
         assertFalse(viewModel.isLoading.value)
@@ -82,8 +90,27 @@ class RequestDetailViewModelTest {
     }
 
     @Test
-    fun `reject - isLoading resets, errorMessage set, Rejected emitted`() = runTest(testDispatcher) {
-        val errorMsg = "Request rejected"
+    fun `reject success - isLoading resets, successMessage set, Rejected emitted`() = runTest(testDispatcher) {
+        coEvery { mockService.reject(request) } returns RequestResult.Success
+
+        val outcomes = mutableListOf<RequestOutcome>()
+        val job = launch { viewModel.navigationEvent.collect { outcomes.add(it) } }
+
+        viewModel.reject(request)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.isLoading.value)
+        assertEquals("Request rejected", viewModel.successMessage.value)
+        assertNull(viewModel.errorMessage.value)
+        val rejected = outcomes.filterIsInstance<RequestOutcome.Rejected>().firstOrNull()
+        assertEquals("Request rejected", rejected?.message)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `reject failure - isLoading resets, errorMessage set, Rejected emitted with error message`() = runTest(testDispatcher) {
+        val errorMsg = "Rejection failed: network error"
         coEvery { mockService.reject(request) } returns RequestResult.Error(errorMsg)
 
         val outcomes = mutableListOf<RequestOutcome>()
@@ -93,9 +120,15 @@ class RequestDetailViewModelTest {
         advanceUntilIdle()
 
         assertFalse(viewModel.isLoading.value)
+        assertNull(viewModel.successMessage.value)
         assertEquals(errorMsg, viewModel.errorMessage.value)
-        assertTrue(outcomes.any { it is RequestOutcome.Rejected })
+        val rejected = outcomes.filterIsInstance<RequestOutcome.Rejected>().firstOrNull()
+        assertEquals(errorMsg, rejected?.message)
 
         job.cancel()
+    }
+
+    private companion object {
+        const val SERVICE_DELAY_MS = 50L
     }
 }
