@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.home.viewmodel.RequestSharedViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -44,8 +45,9 @@ private val ButtonBackground = Color(0xFF285976)
 private val ButtonBorder = Color(0xFF87D6CD)
 private val SuccessGreen = Color(0xFF8FD4A4)
 private val ErrorPink = Color(0xFFF4A3A3)
-private val SnackbarTextColor = Color(0xFF1A1A1A)
+private val SnackbarTextColor = Color(0xFF4A4A4A)
 private val ButtonShadowColor = Color(0x29000000)
+private val SnackbarShadowColor = Color(0x1F000000)
 
 private class OutcomeSnackbarVisuals(
     override val message: String,
@@ -164,17 +166,41 @@ private fun OutcomeSnackbar(data: SnackbarData) {
     } else {
         ErrorPink
     }
-    Snackbar(
-        snackbarData = data,
+    Row(
         modifier = Modifier
             .padding(horizontal = 21.dp)
             .fillMaxWidth()
-            .height(48.dp),
-        shape = RoundedCornerShape(4.dp),
-        containerColor = container,
-        contentColor = SnackbarTextColor,
-        dismissActionContentColor = SnackbarTextColor,
-    )
+            .height(48.dp)
+            .shadow(
+                elevation = 3.dp,
+                shape = RoundedCornerShape(4.dp),
+                spotColor = SnackbarShadowColor,
+                ambientColor = SnackbarShadowColor,
+            )
+            .clip(RoundedCornerShape(4.dp))
+            .background(container)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = data.visuals.message,
+            color = SnackbarTextColor,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+        )
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clickable { data.dismiss() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "×",
+                color = SnackbarTextColor,
+                fontSize = 22.sp,
+            )
+        }
+    }
 }
 
 private fun RequestOutcome.toSnackbarVisuals(): SnackbarVisuals =

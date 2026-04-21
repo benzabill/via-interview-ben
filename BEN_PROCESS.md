@@ -53,4 +53,8 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T00:42Z | `start a git worktree and do the work there` |
 | 2026-04-21T00:46Z | `im still not seeing any snackbars` |
 | 2026-04-21T00:50Z | `/Users/btseytlin/Downloads/snackbars.pdf snackbars dont look right. make sure they have this text and look like this` |
+| 2026-04-21T00:52Z | `yes` |
+| 2026-04-21T00:54Z | `snackbars are squished, need more padding, move X to right end, and font should be greyer and X larger. be careful to match correctly` |
+| 2026-04-21T00:54Z | `update to main` |
+| 2026-04-21T00:54Z | `run app` |
 | 2026-04-21T00:55Z | `do a genearl code review of modularization, logic, and unit tests, make a PR fixing these` |
