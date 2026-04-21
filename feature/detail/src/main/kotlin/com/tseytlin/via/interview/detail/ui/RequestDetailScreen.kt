@@ -1,4 +1,4 @@
-package com.tseytlin.via.interview.detail
+package com.tseytlin.via.interview.detail.ui
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler

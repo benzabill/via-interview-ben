@@ -1,5 +1,6 @@
-package com.tseytlin.via.interview.detail
+package com.tseytlin.via.interview.detail.ui
 
+import com.tseytlin.via.interview.detail.R
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState

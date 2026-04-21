@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.tseytlin.via.interview.detail.RequestDetailScreen
-import com.tseytlin.via.interview.home.HomeScreen
+import com.tseytlin.via.interview.detail.ui.RequestDetailScreen
+import com.tseytlin.via.interview.home.ui.HomeScreen
 import com.tseytlin.via.interview.home.viewmodel.RequestSharedViewModel
 import org.koin.androidx.compose.koinViewModel
 

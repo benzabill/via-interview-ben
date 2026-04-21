@@ -1,4 +1,4 @@
-package com.tseytlin.via.interview.detail
+package com.tseytlin.via.interview.detail.ui
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,8 +25,8 @@ internal val CheckGlyphSize = 18.sp
 internal val ChevronSpacing = 2.dp
 
 // Screen layout
-internal val ScreenPaddingHorizontal = 24.dp
-internal val ScreenPaddingVertical = 32.dp
+internal val ScreenPaddingHorizontal = 12.dp
+internal val ScreenPaddingVertical = 24.dp
 internal val ScreenSectionGap = 24.dp
 internal val ActionRowGap = 12.dp
 
