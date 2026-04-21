@@ -19,6 +19,6 @@ class MockRequestService(
     }
 
     override suspend fun reject(request: Request): RequestResult {
-        return RequestResult.Error("Request rejected")
+        return RequestResult.Success
     }
 }

@@ -4,7 +4,6 @@ import com.tseytlin.via.interview.data.service.MockRequestService
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestResult
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -13,11 +12,10 @@ class MockRequestServiceTest {
     private val request = Request(id = "1", title = "Heading 1", description = "Lorem ipsum")
 
     @Test
-    fun `reject returns Error immediately`() = runTest {
+    fun `reject returns Success immediately`() = runTest {
         val service = MockRequestService()
         val result = service.reject(request)
-        assertTrue(result is RequestResult.Error)
-        assertEquals("Request rejected", (result as RequestResult.Error).message)
+        assertTrue(result is RequestResult.Success)
     }
 
     @Test
