@@ -33,21 +33,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.home.viewmodel.RequestSharedViewModel
 import org.koin.androidx.compose.koinViewModel
-
-private val ViaLightBlue = Color(0xFFD6EAF0)
-private val HomeTitleColor = Color(0xFF0E3B5B)
-private val ButtonBackground = Color(0xFF285976)
-private val ButtonBorder = Color(0xFF87D6CD)
-private val SuccessGreen = Color(0xFF8FD4A4)
-private val ErrorPink = Color(0xFFF4A3A3)
-private val SnackbarTextColor = Color(0xFF4A4A4A)
-private val ButtonShadowColor = Color(0x29000000)
-private val SnackbarShadowColor = Color(0x1F000000)
 
 private class OutcomeSnackbarVisuals(
     override val message: String,
@@ -89,7 +77,7 @@ fun HomeScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 32.dp, top = 24.dp),
+                    .padding(start = TitlePaddingStart, top = TitlePaddingTop),
             )
             Spacer(modifier = Modifier.weight(180f))
             ViaLogo()
@@ -104,7 +92,7 @@ fun HomeScreen(
 private fun ViaLogo() {
     Box(
         modifier = Modifier
-            .size(238.dp)
+            .size(LogoCircleSize)
             .clip(CircleShape)
             .background(Color.White),
         contentAlignment = Alignment.Center,
@@ -112,7 +100,7 @@ private fun ViaLogo() {
         Image(
             painter = painterResource(id = R.drawable.via_logo),
             contentDescription = "VIA",
-            modifier = Modifier.size(width = 160.dp, height = 53.dp),
+            modifier = Modifier.size(width = LogoImageWidth, height = LogoImageHeight),
             contentScale = ContentScale.Fit,
         )
     }
@@ -123,20 +111,20 @@ private fun CreateRequestButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 41.dp)
-            .height(48.dp)
+            .padding(horizontal = CreateButtonHorizontalMargin)
+            .height(CreateButtonHeight)
             .shadow(
-                elevation = 3.dp,
-                shape = RoundedCornerShape(12.dp),
+                elevation = CreateButtonShadowElevation,
+                shape = RoundedCornerShape(CreateButtonCorner),
                 spotColor = ButtonShadowColor,
                 ambientColor = ButtonShadowColor,
             )
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(CreateButtonCorner))
             .background(ButtonBackground)
             .border(
-                width = 1.dp,
+                width = CreateButtonBorderWidth,
                 color = ButtonBorder,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(CreateButtonCorner),
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -168,18 +156,18 @@ private fun OutcomeSnackbar(data: SnackbarData) {
     }
     Row(
         modifier = Modifier
-            .padding(horizontal = 21.dp)
+            .padding(horizontal = SnackbarHorizontalMargin)
             .fillMaxWidth()
-            .height(48.dp)
+            .height(SnackbarHeight)
             .shadow(
-                elevation = 3.dp,
-                shape = RoundedCornerShape(4.dp),
+                elevation = SnackbarShadowElevation,
+                shape = RoundedCornerShape(SnackbarCorner),
                 spotColor = SnackbarShadowColor,
                 ambientColor = SnackbarShadowColor,
             )
-            .clip(RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(SnackbarCorner))
             .background(container)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = SnackbarContentPadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -190,14 +178,14 @@ private fun OutcomeSnackbar(data: SnackbarData) {
         )
         Box(
             modifier = Modifier
-                .size(32.dp)
+                .size(SnackbarDismissHitTarget)
                 .clickable { data.dismiss() },
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = "×",
                 color = SnackbarTextColor,
-                fontSize = 22.sp,
+                fontSize = SnackbarDismissGlyphSize,
             )
         }
     }

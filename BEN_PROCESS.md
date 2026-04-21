@@ -59,3 +59,34 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T00:54Z | `run app` |
 | 2026-04-21T00:55Z | `do a genearl code review of modularization, logic, and unit tests, make a PR fixing these` |
 | 2026-04-21T01:01Z | `push the pr` |
+| 2026-04-21T01:03Z | `theres conflicts, reoslve with main` |
+| 2026-04-21T01:07Z | `on the Request page we need to flip the status bar icons to white so that it contrasts the green, think about a good way to do it` |
+| 2026-04-21T01:08Z | `Add a 1px border around the slider with this hex color border: 1px solid #87D6CD` |
+| 2026-04-21T01:08Z | `use these dimensions for the actual slider object that we slide: width: 56; height: 54; angle: 0 deg; opacity: 1;` |
+| 2026-04-21T01:09Z | `each little chevron icon on the slider itself should have these dimens width: 7.5; height: 15; top: 20px; left: 31.7px; angle: 0 deg; opacity: 1; border-width: 3px;` |
+| 2026-04-21T01:10Z | `Compare what we implemented to the original spec, are we hitting criteria? Is there anything we should add to clean up the code to make it more consumable, maintanible?` |
+| 2026-04-21T01:11Z | `Take a pass as a high level overview, including modules. Also take a pass as a low level code investigation for cleaner or more readable code.` |
+| 2026-04-21T01:12Z | `fix the above` |
+| 2026-04-21T01:12Z | `do a pass to make sure we have well named methods and variables that are clear` |
+| 2026-04-21T01:16Z | `/Users/btseytlin/Downloads/VIA\ Interview/Path\ 8.svg for the chevron use two of these side by side (instead of any path thing)` |
+| 2026-04-21T01:19Z | `what are we calling slider versus the thing we move?` |
+| 2026-04-21T01:19Z | `pull main down refresh` |
+| 2026-04-21T01:22Z | `track height should be 48 and thumb height should be 56. also we should start the track 1 to the right` |
+| 2026-04-21T01:23Z | `rename interview.md to REQUIREMENTS.md` |
+| 2026-04-21T01:25Z | `make the outline of the slider track and reject outline to be 2 and share the dimen value. shift the thumb over 3 instead of 1. also make sure we put all paddings and margins etc into dimens.` |
+| 2026-04-21T01:29Z | `[interrupt] make the outline of the slider track and reject outline to be 2 and share the dimen value. shift the thumb over 3 instead of 1. also make sure we put all paddings and margins etc into dimens.` |
+| 2026-04-21T01:31Z | `color xml instead of being defined in composable? private val HomeBackground = Color(0xFFDEEFF5) / HomeTitleColor / ButtonBackground / SnackbarSuccess / SnackbarError` |
+| 2026-04-21T01:31Z | `move as many .dp as we can to dimens` |
+| 2026-04-21T01:33Z | `sure lets do per feature colors file` |
+| 2026-04-21T01:37Z | `both together` |
+| 2026-04-21T01:40Z | `rject button outline and slider should have same height and outline color/width. use the one from slider` |
+| 2026-04-21T01:40Z | `shift the thumb track to have 2 more margin on start` |
+| 2026-04-21T01:42Z | `TrackStartInset to 10dp` |
+| 2026-04-21T01:44Z | `trackstartinset is not doing anything. is that insetting the thumb? its not mmoving` |
+| 2026-04-21T01:45Z | `back to just 2 offset` |
+| 2026-04-21T01:45Z | `make it 5` |
+| 2026-04-21T01:47Z | `change font / sizing of reject and slide to approve and the lorem ipsem stuff to match font-family: Inter; font-weight: 400; font-style: Regular; font-size: 15px; leading-trim: NONE; line-height: 19px; letter-spacing: 0%; text-align: center;` |
+| 2026-04-21T01:48Z | `same with the snackbars and createa  new request. all should use the same font like above. reuse.` |
+| 2026-04-21T01:52Z | `update to main and make a pr` |
+| 2026-04-21T01:53Z | `can we rename interview.md to REQUIREMENTS.md` |
+| 2026-04-21T01:54Z | `delete ExampleInstrumentedTest and ExampleUnitTest and empty folders that those leave` |

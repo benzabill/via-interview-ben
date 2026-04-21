@@ -2,13 +2,20 @@ package com.tseytlin.via.interview.detail
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,32 +33,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
-private val TrackHeight = 56.dp
-private val ThumbSize = 48.dp
-private val TrackCorner = 12.dp
-private val ThumbCorner = 10.dp
-private val ThumbInset = (TrackHeight - ThumbSize) / 2
-
-private val TrackDark = Color(0xFF285976)
-private val TrackLight = Color(0xFFA7DDD3)
-private val ChevronColor = Color(0xFFA7DDD3)
-private val LabelOnDark = Color.White
-private val LabelOnLight = Color(0xFF285976)
-private val ThumbColor = Color.White
-private val ThumbShadow = Color(0x29000000)
-private val CheckBadgeColor = Color(0xFFA7DDD3)
 
 @Composable
 fun SlideToApprove(
@@ -63,16 +55,23 @@ fun SlideToApprove(
     var committed by remember { mutableStateOf(false) }
     val offsetX = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
+    val commitProgress by animateFloatAsState(
+        targetValue = if (committed) 1f else 0f,
+        animationSpec = tween(durationMillis = 240),
+        label = "commitProgress",
+    )
 
     BoxWithConstraints(
-        modifier = modifier.fillMaxWidth().height(TrackHeight),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(ThumbHeight),
         contentAlignment = Alignment.CenterStart,
     ) {
         val density = LocalDensity.current
         val trackWidthPx = with(density) { maxWidth.toPx() }
-        val thumbSizePx = with(density) { ThumbSize.toPx() }
-        val insetPx = with(density) { ThumbInset.toPx() }
-        val maxOffsetPx = (trackWidthPx - thumbSizePx - insetPx * 2).coerceAtLeast(0f)
+        val thumbWidthPx = with(density) { ThumbWidth.toPx() }
+        val thumbStartPx = with(density) { ThumbStartInset.toPx() }
+        val maxOffsetPx = (trackWidthPx - thumbWidthPx - thumbStartPx).coerceAtLeast(0f)
 
         val progress by remember(maxOffsetPx) {
             derivedStateOf {
@@ -93,7 +92,8 @@ fun SlideToApprove(
                 .fillMaxWidth()
                 .height(TrackHeight)
                 .clip(RoundedCornerShape(TrackCorner))
-                .background(trackColor),
+                .background(trackColor)
+                .border(OutlineWidth, TrackBorder, RoundedCornerShape(TrackCorner)),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -113,10 +113,10 @@ fun SlideToApprove(
 
         Box(
             modifier = Modifier
-                .offset { IntOffset((offsetX.value + insetPx).roundToInt(), 0) }
-                .size(ThumbSize)
+                .offset { IntOffset((thumbStartPx + offsetX.value).roundToInt(), 0) }
+                .size(width = ThumbWidth, height = ThumbHeight)
                 .shadow(
-                    elevation = 3.dp,
+                    elevation = ThumbShadowElevation,
                     shape = RoundedCornerShape(ThumbCorner),
                     spotColor = ThumbShadow,
                     ambientColor = ThumbShadow,
@@ -148,26 +148,33 @@ fun SlideToApprove(
                 },
             contentAlignment = Alignment.Center,
         ) {
-            if (committed) {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(CheckBadgeColor),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "✓",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(ChevronSpacing),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .alpha(1f - commitProgress)
+                    .scale(1f - commitProgress * 0.4f),
+            ) {
+                repeat(2) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_slide_chevron),
+                        contentDescription = null,
                     )
                 }
-            } else {
+            }
+            Box(
+                modifier = Modifier
+                    .alpha(commitProgress)
+                    .scale(0.5f + commitProgress * 0.5f)
+                    .size(CheckBadgeSize)
+                    .clip(CircleShape)
+                    .background(CheckBadgeColor),
+                contentAlignment = Alignment.Center,
+            ) {
                 Text(
-                    text = "»",
-                    color = ChevronColor,
-                    fontSize = 22.sp,
+                    text = "✓",
+                    color = Color.White,
+                    fontSize = CheckGlyphSize,
                     fontWeight = FontWeight.Bold,
                 )
             }

@@ -109,5 +109,5 @@ Each phase = one PR. Each PR must build cleanly and pass its own tests before me
 - Apply `MaterialTheme` with correct palette
 - Typography for title, body, button labels
 - Remove any placeholder/stub code
-- Final review against `interview.md` checklist — all boxes ticked
+- Final review against `REQUIREMENTS.md` checklist — all boxes ticked
 - ✅ Testable: all unit tests pass, UI visually matches Figma

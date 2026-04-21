@@ -1,5 +1,6 @@
 package com.tseytlin.via.interview.detail
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,24 +21,19 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.tseytlin.via.interview.detail.viewmodel.RequestDetailViewModel
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestOutcome
 import org.koin.androidx.compose.koinViewModel
-
-private val DetailBackground = Color(0xFF1B5061)
-private val DetailCardBackground = Color(0xFF2A6B7C)
-private val CardTitleColor = Color.White
-private val CardBodyColor = Color(0xFFDCEAEF)
-private val RejectOutline = Color.White
-private val RejectLabel = Color.White
 
 @Composable
 fun RequestDetailScreen(
@@ -46,6 +42,8 @@ fun RequestDetailScreen(
 ) {
     val viewModel: RequestDetailViewModel = koinViewModel()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    StatusBarIconsLight()
 
     // Block system back while a service call is in flight so the user can't pop the
     // screen mid-request and miss the outcome snackbar.
@@ -62,8 +60,8 @@ fun RequestDetailScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                    .padding(horizontal = ScreenPaddingHorizontal, vertical = ScreenPaddingVertical),
+                verticalArrangement = Arrangement.spacedBy(ScreenSectionGap),
             ) {
                 Text(
                     text = "New Request",
@@ -79,17 +77,17 @@ fun RequestDetailScreen(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(ActionRowGap),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     OutlinedButton(
                         onClick = { viewModel.reject(request) },
                         enabled = !isLoading,
                         modifier = Modifier
-                            .width(104.dp)
-                            .height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, RejectOutline),
+                            .width(RejectButtonWidth)
+                            .height(RejectButtonHeight),
+                        shape = RoundedCornerShape(RejectButtonCorner),
+                        border = androidx.compose.foundation.BorderStroke(OutlineWidth, TrackBorder),
                     ) {
                         Text(
                             text = "Reject",
@@ -121,16 +119,33 @@ fun RequestDetailScreen(
     }
 }
 
+// Flip the status-bar icons to white while this screen is in composition,
+// then restore the previous appearance on dispose so other screens keep
+// their defaults. Uses the modern WindowInsetsController API so the choice
+// is per-screen rather than a global theme flag.
+@Composable
+private fun StatusBarIconsLight() {
+    val view = LocalView.current
+    if (view.isInEditMode) return
+    val window = (view.context as? Activity)?.window ?: return
+    DisposableEffect(window, view) {
+        val controller = WindowCompat.getInsetsController(window, view)
+        val previous = controller.isAppearanceLightStatusBars
+        controller.isAppearanceLightStatusBars = false
+        onDispose { controller.isAppearanceLightStatusBars = previous }
+    }
+}
+
 @Composable
 private fun RequestCard(request: Request, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(CardCorner),
         colors = CardDefaults.cardColors(containerColor = DetailCardBackground),
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(CardPadding),
+            verticalArrangement = Arrangement.spacedBy(CardContentGap),
         ) {
             Text(
                 text = request.title,
