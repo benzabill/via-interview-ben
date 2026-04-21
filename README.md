@@ -5,6 +5,7 @@
   [`BEN_PROCESS.md`](./BEN_PROCESS.md) via a `CLAUDE.md` instruction, so the
   transcript of what I actually asked — decisions, corrections, follow-ups —
   is auditable alongside the code.
+- Claude is good but not perfect, it requires a close eye for proper polish and performance and so there was definitely some good old fashioned looking closely at spec, figma and actual app output and guide the landing to a nice final product.
 
 ## Key Documents
 
