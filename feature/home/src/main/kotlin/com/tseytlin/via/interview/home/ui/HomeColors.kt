@@ -1,4 +1,4 @@
-package com.tseytlin.via.interview.home
+package com.tseytlin.via.interview.home.ui
 
 import androidx.compose.ui.graphics.Color
 

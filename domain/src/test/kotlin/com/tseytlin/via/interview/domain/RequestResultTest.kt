@@ -13,7 +13,7 @@ class RequestResultTest {
             RequestResult.Success,
             RequestResult.Error("something went wrong"),
         )
-        assertTrue(results[0] is RequestResult.Success)
+        assert(results[0] is RequestResult.Success)
         assertTrue(results[1] is RequestResult.Error)
     }
 

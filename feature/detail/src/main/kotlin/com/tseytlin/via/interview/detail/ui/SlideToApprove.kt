@@ -1,5 +1,6 @@
-package com.tseytlin.via.interview.detail
+package com.tseytlin.via.interview.detail.ui
 
+import com.tseytlin.via.interview.detail.R
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
@@ -10,14 +11,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,23 +24,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -61,17 +62,19 @@ fun SlideToApprove(
         label = "commitProgress",
     )
 
-    BoxWithConstraints(
+    var trackWidthPx by remember { mutableFloatStateOf(0f) }
+    val density = LocalDensity.current
+    val thumbWidthPx = with(density) { ThumbWidth.toPx() }
+    val thumbStartPx = with(density) { ThumbStartInset.toPx() }
+    val maxOffsetPx = (trackWidthPx - thumbWidthPx - thumbStartPx).coerceAtLeast(0f)
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(ThumbHeight),
+            .height(ThumbHeight)
+            .onSizeChanged { trackWidthPx = it.width.toFloat() },
         contentAlignment = Alignment.CenterStart,
     ) {
-        val density = LocalDensity.current
-        val trackWidthPx = with(density) { maxWidth.toPx() }
-        val thumbWidthPx = with(density) { ThumbWidth.toPx() }
-        val thumbStartPx = with(density) { ThumbStartInset.toPx() }
-        val maxOffsetPx = (trackWidthPx - thumbWidthPx - thumbStartPx).coerceAtLeast(0f)
 
         val progress by remember(maxOffsetPx) {
             derivedStateOf {
@@ -116,7 +119,7 @@ fun SlideToApprove(
                 .offset { IntOffset((thumbStartPx + offsetX.value).roundToInt(), 0) }
                 .size(width = ThumbWidth, height = ThumbHeight)
                 .shadow(
-                    elevation = ThumbShadowElevation,
+                    elevation = 0.dp,
                     shape = RoundedCornerShape(ThumbCorner),
                     spotColor = ThumbShadow,
                     ambientColor = ThumbShadow,
@@ -162,22 +165,14 @@ fun SlideToApprove(
                     )
                 }
             }
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.ic_checkmark_circle),
+                contentDescription = null,
                 modifier = Modifier
                     .alpha(commitProgress)
                     .scale(0.5f + commitProgress * 0.5f)
-                    .size(CheckBadgeSize)
-                    .clip(CircleShape)
-                    .background(CheckBadgeColor),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "✓",
-                    color = Color.White,
-                    fontSize = CheckGlyphSize,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+                    .size(CheckBadgeSize),
+            )
         }
     }
 }
