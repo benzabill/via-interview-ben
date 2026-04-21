@@ -128,4 +128,4 @@
 - [x] Provide project as a zipped archive **or** a link to a Git repository
 - [x] Test targets must be included in the submission
 
-**Repository:** https://github.com/benzabill/via-interview-tseytlin/tree/main
+**Repository:** https://github.com/benzabill/via-interview-ben/tree/main

@@ -1,8 +1,8 @@
 package com.tseytlin.via.interview.domain
 
 import com.tseytlin.via.interview.domain.model.RequestResult
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import org.junit.Test
 
 class RequestResultTest {
@@ -13,8 +13,8 @@ class RequestResultTest {
             RequestResult.Success,
             RequestResult.Error("something went wrong"),
         )
-        assertTrue(results[0] is RequestResult.Success)
-        assertTrue(results[1] is RequestResult.Error)
+        assertIs<RequestResult.Success>(results[0])
+        assertIs<RequestResult.Error>(results[1])
     }
 
     @Test

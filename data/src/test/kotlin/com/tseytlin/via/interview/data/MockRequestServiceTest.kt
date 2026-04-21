@@ -4,7 +4,8 @@ import com.tseytlin.via.interview.data.service.MockRequestService
 import com.tseytlin.via.interview.domain.model.Request
 import com.tseytlin.via.interview.domain.model.RequestResult
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
 import org.junit.Test
 
 class MockRequestServiceTest {
@@ -15,21 +16,21 @@ class MockRequestServiceTest {
     fun `reject returns Success immediately`() = runTest {
         val service = MockRequestService()
         val result = service.reject(request)
-        assertTrue(result is RequestResult.Success)
+        assertIs<RequestResult.Success>(result)
     }
 
     @Test
     fun `approve returns Success when random is below 0_5`() = runTest {
         val service = MockRequestService(random = { 0.1 })
         val result = service.approve(request)
-        assertTrue(result is RequestResult.Success)
+        assertIs<RequestResult.Success>(result)
     }
 
     @Test
     fun `approve returns Error when random is 0_5 or above`() = runTest {
         val service = MockRequestService(random = { 0.9 })
         val result = service.approve(request)
-        assertTrue(result is RequestResult.Error)
-        assertTrue((result as RequestResult.Error).message.isNotBlank())
+        val error = assertIs<RequestResult.Error>(result)
+        assertTrue(error.message.isNotBlank())
     }
 }

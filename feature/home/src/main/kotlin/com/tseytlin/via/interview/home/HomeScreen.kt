@@ -30,7 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.res.painterResource
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.Image
 import androidx.compose.ui.text.font.FontWeight
 import com.tseytlin.via.interview.domain.model.RequestOutcome
@@ -138,10 +140,25 @@ private fun CreateRequestButton(onClick: () -> Unit) {
 }
 
 // Renders the currently-visible snackbar without Material's default fade/scale animation,
-// to match the Figma spec's 0ms animation-duration.
+// to match the Figma spec's 0ms animation-duration. Also reimplements the auto-dismiss
+// timer that the stock SnackbarHost provides — without it, `showSnackbar` would suspend
+// forever and the snackbar would stay on screen until the user tapped ×.
 @Composable
 private fun InstantSnackbarHost(hostState: SnackbarHostState) {
     val data = hostState.currentSnackbarData
+    val accessibilityManager = LocalAccessibilityManager.current
+    LaunchedEffect(data) {
+        if (data == null || data.visuals.duration == SnackbarDuration.Indefinite) return@LaunchedEffect
+        val base = if (data.visuals.duration == SnackbarDuration.Long) 10_000L else 4_000L
+        val timeout = accessibilityManager?.calculateRecommendedTimeoutMillis(
+            originalTimeoutMillis = base,
+            containsIcons = true,
+            containsText = true,
+            containsControls = data.visuals.actionLabel != null,
+        ) ?: base
+        delay(timeout)
+        data.dismiss()
+    }
     if (data != null) {
         OutcomeSnackbar(data)
     }
@@ -156,6 +173,7 @@ private fun OutcomeSnackbar(data: SnackbarData) {
     }
     Row(
         modifier = Modifier
+            .padding(bottom = SnackbarBottomInset)
             .padding(horizontal = SnackbarHorizontalMargin)
             .fillMaxWidth()
             .height(SnackbarHeight)

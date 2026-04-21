@@ -68,7 +68,7 @@ fun SlideToApprove(
         contentAlignment = Alignment.CenterStart,
     ) {
         val density = LocalDensity.current
-        val trackWidthPx = with(density) { maxWidth.toPx() }
+        val trackWidthPx = constraints.maxWidth.toFloat()
         val thumbWidthPx = with(density) { ThumbWidth.toPx() }
         val thumbStartPx = with(density) { ThumbStartInset.toPx() }
         val maxOffsetPx = (trackWidthPx - thumbWidthPx - thumbStartPx).coerceAtLeast(0f)
