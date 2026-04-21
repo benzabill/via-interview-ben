@@ -7,6 +7,8 @@
   is auditable alongside the code.
 - Claude is good but not perfect, it requires a close eye for proper polish and performance and so there was definitely some good old fashioned looking closely at spec, figma and actual app output and guide the landing to a nice final product.
 
+https://github.com/user-attachments/assets/4dcc352a-ee13-481f-a558-cf089e26d085
+
 ## Key Documents
 
 - [`REQUIREMENTS.md`](./REQUIREMENTS.md) — requirements spec distilled from the brief, with decisions
