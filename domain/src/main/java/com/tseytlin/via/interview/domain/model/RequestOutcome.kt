@@ -1,7 +1,9 @@
 package com.tseytlin.via.interview.domain.model
 
 sealed class RequestOutcome {
-    data object Approved : RequestOutcome()
-    data class Rejected(val message: String) : RequestOutcome()
-    data class ApprovalFailed(val message: String) : RequestOutcome()
+    abstract val message: String
+
+    data class Approved(override val message: String) : RequestOutcome()
+    data class Rejected(override val message: String) : RequestOutcome()
+    data class ApprovalFailed(override val message: String) : RequestOutcome()
 }

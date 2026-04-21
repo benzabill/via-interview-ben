@@ -37,9 +37,10 @@ class RequestDetailViewModel(
             _errorMessage.value = null
             when (val result = requestService.approve(request)) {
                 is RequestResult.Success -> {
-                    _successMessage.value = "Request approved"
+                    val message = "Request approved"
+                    _successMessage.value = message
                     _isLoading.value = false
-                    _navigationEvent.emit(RequestOutcome.Approved)
+                    _navigationEvent.emit(RequestOutcome.Approved(message))
                 }
                 is RequestResult.Error -> {
                     _errorMessage.value = result.message
@@ -57,8 +58,10 @@ class RequestDetailViewModel(
             _errorMessage.value = null
             when (val result = requestService.reject(request)) {
                 is RequestResult.Success -> {
+                    val message = "Request approved"
+                    _successMessage.value = message
                     _isLoading.value = false
-                    _navigationEvent.emit(RequestOutcome.Approved)
+                    _navigationEvent.emit(RequestOutcome.Approved(message))
                 }
                 is RequestResult.Error -> {
                     _errorMessage.value = result.message
