@@ -1,9 +1,11 @@
 package com.tseytlin.via.interview.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
@@ -27,7 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,10 +39,15 @@ import com.tseytlin.via.interview.domain.model.RequestOutcome
 import com.tseytlin.via.interview.home.viewmodel.RequestSharedViewModel
 import org.koin.androidx.compose.koinViewModel
 
-private val ViaTeal = Color(0xFF0C3B3A)
 private val ViaLightBlue = Color(0xFFD6EAF0)
-private val SuccessGreen = Color(0xFF2E7D32)
-private val ErrorPink = Color(0xFFE91E63)
+private val HomeTitleColor = Color(0xFF0E3B5B)
+private val ButtonBackground = Color(0xFF285976)
+private val ButtonBorder = Color(0xFF87D6CD)
+private val SuccessGreen = Color(0xFF8FD4A4)
+private val ErrorPink = Color(0xFFF4A3A3)
+private val SnackbarTextColor = Color(0xFF4A4A4A)
+private val ButtonShadowColor = Color(0x29000000)
+private val SnackbarShadowColor = Color(0x1F000000)
 
 private class OutcomeSnackbarVisuals(
     override val message: String,
@@ -46,7 +55,7 @@ private class OutcomeSnackbarVisuals(
 ) : SnackbarVisuals {
     override val actionLabel: String? = null
     override val duration: SnackbarDuration = SnackbarDuration.Short
-    override val withDismissAction: Boolean = false
+    override val withDismissAction: Boolean = true
 }
 
 @Composable
@@ -58,54 +67,35 @@ fun HomeScreen(
 
     LaunchedEffect(sharedViewModel) {
         sharedViewModel.outcomeFlow.collect { outcome ->
+            sharedViewModel.consumeOutcome()
             snackbarHostState.showSnackbar(outcome.toSnackbarVisuals())
         }
     }
 
     Scaffold(
         containerColor = ViaLightBlue,
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = { data ->
-                    val container = if ((data.visuals as? OutcomeSnackbarVisuals)?.isSuccess == true) {
-                        SuccessGreen
-                    } else {
-                        ErrorPink
-                    }
-                    Snackbar(
-                        snackbarData = data,
-                        containerColor = container,
-                        contentColor = Color.White,
-                    )
-                },
-            )
-        },
+        snackbarHost = { InstantSnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 32.dp),
+                .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
+            Text(
+                text = "Home",
+                color = HomeTitleColor,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp, top = 24.dp),
+            )
+            Spacer(modifier = Modifier.weight(180f))
             ViaLogo()
-            Spacer(modifier = Modifier.height(48.dp))
-            Button(
-                onClick = onCreateRequest,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ViaTeal,
-                    contentColor = Color.White,
-                ),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = "Create new request",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(vertical = 8.dp),
-                )
-            }
+            Spacer(modifier = Modifier.weight(68f))
+            CreateRequestButton(onClick = onCreateRequest)
+            Spacer(modifier = Modifier.weight(295f))
         }
     }
 }
@@ -114,17 +104,102 @@ fun HomeScreen(
 private fun ViaLogo() {
     Box(
         modifier = Modifier
-            .size(160.dp)
+            .size(238.dp)
             .clip(CircleShape)
             .background(Color.White),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = "VIA",
-            color = ViaTeal,
-            fontSize = 44.sp,
-            fontWeight = FontWeight.Bold,
+        Image(
+            painter = painterResource(id = R.drawable.via_logo),
+            contentDescription = "VIA",
+            modifier = Modifier.size(width = 160.dp, height = 53.dp),
+            contentScale = ContentScale.Fit,
         )
+    }
+}
+
+@Composable
+private fun CreateRequestButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 41.dp)
+            .height(48.dp)
+            .shadow(
+                elevation = 3.dp,
+                shape = RoundedCornerShape(12.dp),
+                spotColor = ButtonShadowColor,
+                ambientColor = ButtonShadowColor,
+            )
+            .clip(RoundedCornerShape(12.dp))
+            .background(ButtonBackground)
+            .border(
+                width = 1.dp,
+                color = ButtonBorder,
+                shape = RoundedCornerShape(12.dp),
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "Create new request",
+            color = Color.White,
+            style = MaterialTheme.typography.labelLarge,
+        )
+    }
+}
+
+// Renders the currently-visible snackbar without Material's default fade/scale animation,
+// to match the Figma spec's 0ms animation-duration.
+@Composable
+private fun InstantSnackbarHost(hostState: SnackbarHostState) {
+    val data = hostState.currentSnackbarData
+    if (data != null) {
+        OutcomeSnackbar(data)
+    }
+}
+
+@Composable
+private fun OutcomeSnackbar(data: SnackbarData) {
+    val container = if ((data.visuals as? OutcomeSnackbarVisuals)?.isSuccess == true) {
+        SuccessGreen
+    } else {
+        ErrorPink
+    }
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 21.dp)
+            .fillMaxWidth()
+            .height(48.dp)
+            .shadow(
+                elevation = 3.dp,
+                shape = RoundedCornerShape(4.dp),
+                spotColor = SnackbarShadowColor,
+                ambientColor = SnackbarShadowColor,
+            )
+            .clip(RoundedCornerShape(4.dp))
+            .background(container)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = data.visuals.message,
+            color = SnackbarTextColor,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+        )
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clickable { data.dismiss() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "×",
+                color = SnackbarTextColor,
+                fontSize = 22.sp,
+            )
+        }
     }
 }
 

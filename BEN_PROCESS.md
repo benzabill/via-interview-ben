@@ -42,3 +42,20 @@ All commands and inputs tracked with timestamps.
 | 2026-04-21T00:15Z | `create new request button should have these properties width: 331; height: 48; top: 537px; left: 41px; border-radius: 12px; border-width: 1px; background: #285976; border: 1px solid #87D6CD box-shadow: 0px 3px 3px 0px #00000029;` |
 | 2026-04-21T00:14Z | `I think we are missing the concept in the original spec that gets use to Request Approved Request Rejected snackbar` |
 | 2026-04-21T00:15Z | `snackbar dimens width: 370; height: 48; top: 822px; left: 21px; border-radius: 4px; animation-duration: 0ms;` |
+| 2026-04-21T00:19Z | `pull main` |
+| 2026-04-21T00:27Z | `work on top of fresh main` |
+| 2026-04-21T00:29Z | `/Users/btseytlin/Downloads/slide_states.pdf carefully implement the sliders to match the ui specifications` |
+| 2026-04-21T00:31Z | `/Users/btseytlin/Downloads/via_figma_designs.pdf review/look at the designs again - lets make sure we're implemented to look as closely as possible to the designs. Like the Reject button being next to the slide to accept button` |
+| 2026-04-21T00:37Z | `/Users/btseytlin/Downloads/actual.pdf i never get the snackbars shown on the HomeScreen` |
+| 2026-04-21T00:38Z | `review the code, are we implemented on these specs? Concurrency and Error Handling ● Use Kotlin Coroutines and Flow to call the mock service and manage the ViewModel's state. ● The ViewModel must expose state changes (e.g., isLoading, successMessage, errorMessage) using StateFlow to the View reactively. Code Quality & Testing ● Unit Tests: You must provide unit tests for the RequestDetailViewModel. ○ Test at least one successful approval path (verifying state transitions). ○ Test at least one failure path (rejection or random service failure). ○ Tests must use a TestDispatcher and runTest to ensure proper coroutine testing practices. ● Mocking: Use a mock or stub implementation of the RequestService interface to effectively isolate and test the ViewModel's logic. ● Code Quality: Write clean, modular, and maintainable code with clear naming conventions.` |
+| 2026-04-21T00:41Z | `yes but do it on a separate branch` |
+| 2026-04-21T00:43Z | `check out the branch` |
+| 2026-04-21T00:42Z | `start a git worktree and do the work there` |
+| 2026-04-21T00:46Z | `im still not seeing any snackbars` |
+| 2026-04-21T00:50Z | `/Users/btseytlin/Downloads/snackbars.pdf snackbars dont look right. make sure they have this text and look like this` |
+| 2026-04-21T00:52Z | `yes` |
+| 2026-04-21T00:54Z | `snackbars are squished, need more padding, move X to right end, and font should be greyer and X larger. be careful to match correctly` |
+| 2026-04-21T00:54Z | `update to main` |
+| 2026-04-21T00:54Z | `run app` |
+| 2026-04-21T00:55Z | `do a genearl code review of modularization, logic, and unit tests, make a PR fixing these` |
+| 2026-04-21T01:01Z | `push the pr` |

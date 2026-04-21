@@ -109,7 +109,7 @@ class RequestDetailViewModelTest {
     }
 
     @Test
-    fun `reject failure - isLoading resets, errorMessage set, Rejected emitted with error message`() = runTest(testDispatcher) {
+    fun `reject failure - isLoading resets, raw error in errorMessage, Rejected emitted with normalized text`() = runTest(testDispatcher) {
         val errorMsg = "Rejection failed: network error"
         coEvery { mockService.reject(request) } returns RequestResult.Error(errorMsg)
 
@@ -123,7 +123,7 @@ class RequestDetailViewModelTest {
         assertNull(viewModel.successMessage.value)
         assertEquals(errorMsg, viewModel.errorMessage.value)
         val rejected = outcomes.filterIsInstance<RequestOutcome.Rejected>().firstOrNull()
-        assertEquals(errorMsg, rejected?.message)
+        assertEquals("Request rejected", rejected?.message)
 
         job.cancel()
     }
