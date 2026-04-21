@@ -1,5 +1,6 @@
 package com.tseytlin.via.interview.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,8 +47,12 @@ fun RequestDetailScreen(
     val viewModel: RequestDetailViewModel = koinViewModel()
     val isLoading by viewModel.isLoading.collectAsState()
 
+    // Block system back while a service call is in flight so the user can't pop the
+    // screen mid-request and miss the outcome snackbar.
+    BackHandler(enabled = isLoading) {}
+
     LaunchedEffect(viewModel) {
-        viewModel.navigationEvent.collect { outcome ->
+        viewModel.outcomeEvent.collect { outcome ->
             onNavigateBack(outcome)
         }
     }

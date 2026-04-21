@@ -27,31 +27,28 @@ class RequestDetailViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    private val _navigationEvent = MutableSharedFlow<RequestOutcome>()
-    val navigationEvent: SharedFlow<RequestOutcome> = _navigationEvent.asSharedFlow()
+    private val _outcomeEvent = MutableSharedFlow<RequestOutcome>()
+    val outcomeEvent: SharedFlow<RequestOutcome> = _outcomeEvent.asSharedFlow()
 
     fun approve(request: Request) = runAction(
         action = { requestService.approve(request) },
-        successMessage = "Request approved",
-        outcomeErrorMessage = "Request rejected",
-        successOutcome = RequestOutcome::Approved,
-        errorOutcome = RequestOutcome::ApprovalFailed,
+        successMessage = APPROVED_MESSAGE,
+        onSuccess = RequestOutcome::Approved,
+        onFailure = { serviceError -> RequestOutcome.ApprovalFailed(serviceError) },
     )
 
     fun reject(request: Request) = runAction(
         action = { requestService.reject(request) },
-        successMessage = "Request rejected",
-        outcomeErrorMessage = "Request rejected",
-        successOutcome = RequestOutcome::Rejected,
-        errorOutcome = RequestOutcome::Rejected,
+        successMessage = REJECTED_MESSAGE,
+        onSuccess = RequestOutcome::Rejected,
+        onFailure = { RequestOutcome.Rejected(REJECTED_MESSAGE) },
     )
 
     private fun runAction(
         action: suspend () -> RequestResult,
         successMessage: String,
-        outcomeErrorMessage: String,
-        successOutcome: (String) -> RequestOutcome,
-        errorOutcome: (String) -> RequestOutcome,
+        onSuccess: (String) -> RequestOutcome,
+        onFailure: (serviceError: String) -> RequestOutcome,
     ) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -60,14 +57,19 @@ class RequestDetailViewModel(
             when (val result = action()) {
                 is RequestResult.Success -> {
                     _successMessage.value = successMessage
-                    _navigationEvent.emit(successOutcome(successMessage))
+                    _outcomeEvent.emit(onSuccess(successMessage))
                 }
                 is RequestResult.Error -> {
                     _errorMessage.value = result.message
-                    _navigationEvent.emit(errorOutcome(outcomeErrorMessage))
+                    _outcomeEvent.emit(onFailure(result.message))
                 }
             }
             _isLoading.value = false
         }
+    }
+
+    private companion object {
+        const val APPROVED_MESSAGE = "Request approved"
+        const val REJECTED_MESSAGE = "Request rejected"
     }
 }
